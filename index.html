@@ -199,6 +199,83 @@
         .nav-btn:hover::before { transform: scaleX(1); }
         .nav-btn span { position: relative; z-index: 1; }
 
+        /* ── Hamburger ── */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 22px;
+            height: 1.5px;
+            background: var(--cream);
+            transition: transform .3s ease, opacity .25s ease;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        /* ── Mobile Nav Overlay (sibling of nav in DOM) ── */
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(6,6,13,0.98);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 490;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity .4s ease;
+            pointer-events: none;
+        }
+        .mobile-nav-overlay.open { opacity: 1; pointer-events: all; }
+        .mobile-nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: min(360px, 85vw);
+        }
+        .mobile-nav-list li { border-bottom: 1px solid var(--border); }
+        .mobile-nav-list li:first-child { border-top: 1px solid var(--border); }
+        .mobile-nav-list a {
+            display: block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--cream-60);
+            text-decoration: none;
+            padding: 20px 0;
+            letter-spacing: .02em;
+            transition: color .3s, padding-left .3s;
+        }
+        .mobile-nav-list a:hover { color: var(--cream); padding-left: 10px; }
+        .mobile-nav-list .mobile-cta-link {
+            margin-top: 36px;
+            display: block;
+            font-family: 'Syne', sans-serif;
+            font-size: .78rem;
+            font-weight: 800;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 18px 0;
+            text-align: center;
+            transition: background .3s, color .3s;
+        }
+        .mobile-nav-list .mobile-cta-link:hover { background: var(--gold); color: var(--bg); padding-left: 0; }
+        .mobile-nav-list li:last-child { border: none; }
+
         /* ══════════════════════════════════════
            FLOATING CTA
         ══════════════════════════════════════ */
@@ -1549,22 +1626,129 @@
             transform: translateX(-32px);
         }
 
+        /* ══════════════════════════════════════
+           TOUCH DEVICES — DISABLE CUSTOM CURSOR
+        ══════════════════════════════════════ */
+        @media (hover: none) {
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+
+        /* ══════════════════════════════════════
+           TABLET — 900px
+        ══════════════════════════════════════ */
         @media (max-width: 900px) {
-            nav { padding: 20px 28px; }
+            /* NAV */
+            nav { padding: 20px 24px; }
+            nav.scrolled { padding: 16px 24px; }
+            .nav-hamburger { display: flex; }
+            .nav-btn { display: none; }
+            .nav-links { display: none; }
+            .mobile-nav-overlay { display: flex; }
+
+            /* HERO */
             .hero-content { padding: 120px 28px 80px; }
             .hero-h1 .line-indent,
             .hero-h1 .line-indent2 { padding-left: 0; }
+            .hero-actions { flex-direction: column; align-items: flex-start; gap: 24px; }
+            .scroll-hint { display: none; }
+
+            /* LAYOUT */
             .section { padding: 100px 28px; }
             .section-full { padding: 100px 28px; }
+            .testi-header { padding: 100px 28px 0; }
+
+            /* GRIDS */
             .stats-bar { grid-template-columns: repeat(2, 1fr); }
             .problem-grid { grid-template-columns: 1fr; gap: 60px; }
             .process-grid { grid-template-columns: 1fr; }
             .why-grid { grid-template-columns: 1fr; }
             .results-layout { grid-template-columns: 1fr; }
             .results-sidebar { position: static; }
+            .case-numbers { gap: 28px; flex-wrap: wrap; }
+
+            /* TESTIMONIALS */
             .tscroll-wrap::before, .tscroll-wrap::after { width: 60px; }
-            .nav-links { display: none; }
-            footer { flex-direction: column; gap: 20px; }
+
+            /* FOOTER */
+            footer { flex-direction: column; gap: 20px; padding: 40px 28px; }
+            .footer-links { flex-wrap: wrap; gap: 16px 28px; justify-content: center; }
+        }
+
+        /* ══════════════════════════════════════
+           MOBILE — 480px
+        ══════════════════════════════════════ */
+        @media (max-width: 480px) {
+            /* NAV */
+            nav { padding: 16px 20px; }
+            nav.scrolled { padding: 14px 20px; }
+
+            /* HERO */
+            .hero-content { padding: 100px 20px 60px; }
+            .hero-h1 { margin-bottom: 32px; }
+            .hero-sub { font-size: .95rem; margin-bottom: 40px; }
+            .badge { margin-bottom: 32px; }
+            .btn { padding: 16px 32px; gap: 12px; }
+
+            /* TYPOGRAPHY */
+            .h2 { font-size: clamp(1.9rem, 8vw, 2.8rem); }
+            .cta-h2 { font-size: clamp(2.2rem, 9vw, 3.5rem); }
+
+            /* LAYOUT */
+            .section { padding: 80px 20px; }
+            .section-full { padding: 80px 20px; }
+            .testi-header { padding: 80px 20px 0; }
+
+            /* STATS */
+            .stat { padding: 40px 20px; }
+            .stat-num { font-size: 3rem; }
+            .stat-num .suffix { font-size: 1.5rem; }
+
+            /* PROBLEM */
+            .problem-grid { gap: 48px; }
+            .problem-card { padding: 28px 22px; }
+
+            /* PROCESS */
+            .process-step { padding: 40px 24px; }
+
+            /* WHY */
+            .why-card { padding: 36px 24px; gap: 20px; }
+            .why-num { font-size: 2.4rem; width: 48px; }
+
+            /* RESULTS */
+            .case-card { padding: 36px 24px; }
+            .case-num-val { font-size: 2.4rem; }
+            .case-numbers { gap: 20px; }
+
+            /* TESTIMONIALS */
+            .tscard { width: 280px; padding: 28px 24px; }
+            .tscroll-wrap::before, .tscroll-wrap::after { width: 30px; }
+            .tscroll-gap { margin-top: 40px; }
+
+            /* PROOF */
+            .proof-chat-card { padding: 22px 20px; }
+            .proof-email-card { padding: 28px 20px; }
+            .proof-sub { margin-bottom: 40px; }
+
+            /* FOUNDER */
+            .founder-name { font-size: 2.2rem; }
+            .founder-pullquote { font-size: 1.3rem; }
+            .founder-bio p { font-size: .88rem; }
+            .guarantee-banner { padding: 22px 22px; gap: 16px; }
+
+            /* CTA */
+            .cta-inner { padding: 60px 20px; }
+            .btn-xl { padding: 18px 36px; font-size: .78rem; gap: 14px; }
+            .cta-sub { font-size: .95rem; margin-bottom: 44px; }
+
+            /* FLOAT CTA */
+            .float-cta { right: 16px; bottom: 20px; }
+            .float-cta a { padding: 12px 20px; font-size: .68rem; gap: 10px; }
+
+            /* FOOTER */
+            footer { padding: 36px 20px; }
+            .footer-links { gap: 12px 20px; }
+            .footer-copy { text-align: center; font-size: .68rem; }
         }
     </style>
 </head>
@@ -1579,7 +1763,7 @@
 
     <!-- Floating CTA -->
     <div class="float-cta" id="floatCta">
-        <a href="#discovery">
+        <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer">
             <div class="float-pulse"></div>
             <span>Book Discovery Call</span>
         </a>
@@ -1593,8 +1777,21 @@
             <li><a href="#results">Results</a></li>
             <li><a href="#testimonials">Testimonials</a></li>
         </ul>
-        <a href="#discovery" class="nav-btn"><span>Book Discovery Call</span></a>
+        <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="nav-btn"><span>Book Discovery Call</span></a>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Open navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="mobile-nav-overlay" id="mobileOverlay" aria-hidden="true">
+        <ul class="mobile-nav-list">
+            <li><a href="#process">Process</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="mobile-cta-link">Book Discovery Call</a></li>
+        </ul>
+    </div>
 
     <!-- ════ HERO ════ -->
     <section class="hero" id="hero">
@@ -1626,7 +1823,7 @@
             </p>
 
             <div class="hero-actions">
-                <a href="#discovery" class="btn btn-gold" aria-label="Book your discovery call">
+                <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="btn btn-gold" aria-label="Book your discovery call">
                     <span>Book Discovery Call</span>
                     <span class="btn-arrow" aria-hidden="true">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -1860,7 +2057,7 @@
                     </h2>
                     <p class="reveal-up">These are actual outcomes from MedMasters campaigns — not projections, not averages. Real clinics, real patient lists, real revenue recovered.</p>
                     <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="sidebar-cta reveal-up">
-                        Start Your Diagnostic Call
+                        Book Discovery Call
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
@@ -2213,8 +2410,8 @@
             <p class="cta-sub reveal-up">
                 In 30 minutes, we have an honest conversation to find out if we are the right fit for your practice. No pitch. No pressure. Just a straightforward look at whether we can help you grow.
             </p>
-            <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="btn-xl reveal-up" aria-label="Book your free diagnostic call">
-                <span>Book Your Free Diagnostic Call</span>
+            <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="btn-xl reveal-up" aria-label="Book your discovery call">
+                <span>Book Discovery Call</span>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -2241,6 +2438,30 @@
 
 
     <script>
+    /* ══════════════════════════════════════
+       HAMBURGER MENU
+    ══════════════════════════════════════ */
+    const hamburger    = document.getElementById('navHamburger');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = hamburger.classList.toggle('open');
+        mobileOverlay.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', isOpen);
+        mobileOverlay.setAttribute('aria-hidden', !isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    mobileOverlay.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            mobileOverlay.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            mobileOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        });
+    });
+
     /* ══════════════════════════════════════
        CURSOR
     ══════════════════════════════════════ */
