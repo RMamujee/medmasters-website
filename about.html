@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Kevin Lee | MedMasters</title>
+    <meta name="description" content="Meet Kevin Lee, Founder of MedMasters — built by an operator, not an agency.">
+
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:           #06060d;
+            --surface:      #0c0c1a;
+            --surface-2:    #111124;
+            --gold:         #c9a84c;
+            --gold-light:   #e4c878;
+            --gold-dim:     rgba(201,168,76,0.12);
+            --gold-glow:    rgba(201,168,76,0.08);
+            --teal:         #00d4aa;
+            --teal-dim:     rgba(0,212,170,0.1);
+            --cream:        #f0ead8;
+            --cream-60:     rgba(240,234,216,0.6);
+            --cream-30:     rgba(240,234,216,0.3);
+            --cream-10:     rgba(240,234,216,0.1);
+            --border:       rgba(201,168,76,0.12);
+            --radius:       0px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--cream);
+            font-family: 'Syne', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.25;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        }
+
+        /* CURSOR */
+        .cursor-dot {
+            position: fixed; width: 8px; height: 8px;
+            background: var(--gold); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: transform .15s, width .3s, height .3s, background .3s;
+        }
+        .cursor-ring {
+            position: fixed; width: 36px; height: 36px;
+            border: 1px solid rgba(201,168,76,0.55); border-radius: 50%;
+            pointer-events: none; z-index: 9998;
+            transform: translate(-50%,-50%);
+        }
+        .cursor-dot.hovered  { width: 16px; height: 16px; background: var(--teal); }
+        .cursor-ring.hovered { border-color: var(--teal); width: 56px; height: 56px; }
+
+        /* PROGRESS */
+        #progress {
+            position: fixed; top: 0; left: 0;
+            height: 2px; width: 0%;
+            background: linear-gradient(90deg, var(--gold), var(--teal));
+            z-index: 9001; transition: width .05s linear;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 500; padding: 28px 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            transform: translateY(0);
+            background: rgba(6,6,13,0.88);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: background .5s, border-color .5s, backdrop-filter .5s;
+        }
+        nav.scrolled { padding: 20px 64px; }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem; font-weight: 700;
+            color: var(--cream); text-decoration: none; letter-spacing: .04em;
+        }
+        .logo em { font-style: normal; color: var(--gold); }
+
+        .nav-links { display: flex; gap: 44px; list-style: none; }
+        .nav-links a {
+            color: var(--cream-60); text-decoration: none;
+            font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+            position: relative; transition: color .3s;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -3px; left: 0;
+            width: 0; height: 1px; background: var(--gold);
+            transition: width .35s cubic-bezier(.76,0,.24,1);
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--cream); }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+        .nav-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            border: 1px solid var(--gold); color: var(--gold);
+            padding: 11px 30px; font-family: 'Syne', sans-serif;
+            font-size: .72rem; font-weight: 700; letter-spacing: .18em;
+            text-transform: uppercase; text-decoration: none;
+            position: relative; overflow: hidden; transition: color .4s;
+        }
+        .nav-btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--gold); transform: scaleX(0);
+            transform-origin: left; transition: transform .4s cubic-bezier(.76,0,.24,1);
+        }
+        .nav-btn:hover { color: var(--bg); }
+        .nav-btn:hover::before { transform: scaleX(1); }
+        .nav-btn span { position: relative; z-index: 1; }
+
+        .nav-hamburger {
+            display: none; flex-direction: column; justify-content: center;
+            gap: 5px; background: none; border: none; padding: 8px; cursor: pointer;
+        }
+        .nav-hamburger span {
+            display: block; width: 22px; height: 1.5px;
+            background: var(--cream); transition: transform .3s ease, opacity .25s ease;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        .mobile-nav-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(6,6,13,0.98); backdrop-filter: blur(24px);
+            z-index: 490; flex-direction: column;
+            align-items: center; justify-content: center;
+            opacity: 0; transition: opacity .4s ease; pointer-events: none;
+        }
+        .mobile-nav-overlay.open { opacity: 1; pointer-events: all; }
+        .mobile-nav-list { list-style: none; display: flex; flex-direction: column; align-items: stretch; width: min(360px, 85vw); }
+        .mobile-nav-list li { border-bottom: 1px solid var(--border); }
+        .mobile-nav-list li:first-child { border-top: 1px solid var(--border); }
+        .mobile-nav-list a {
+            display: block; font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem; font-weight: 300; color: var(--cream-60);
+            text-decoration: none; padding: 20px 0; letter-spacing: .02em;
+            transition: color .3s, padding-left .3s;
+        }
+        .mobile-nav-list a:hover { color: var(--cream); padding-left: 10px; }
+        .mobile-nav-list .mobile-cta-link {
+            margin-top: 36px; display: block; font-family: 'Syne', sans-serif;
+            font-size: .78rem; font-weight: 800; letter-spacing: .2em;
+            text-transform: uppercase; color: var(--gold);
+            border: 1px solid var(--gold); padding: 18px 0;
+            text-align: center; transition: background .3s, color .3s;
+        }
+
+        /* PAGE HERO */
+        .about-hero {
+            padding: 180px 64px 100px;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .tag {
+            display: inline-block;
+            font-size: .62rem; letter-spacing: .28em; text-transform: uppercase;
+            color: var(--teal); border: 1px solid var(--teal-dim);
+            padding: 6px 16px; margin-bottom: 32px;
+        }
+        .h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.6rem, 5vw, 4.2rem);
+            font-weight: 300; line-height: 1.1; color: var(--cream);
+        }
+        .h2 em { font-style: italic; color: var(--gold); }
+
+        /* FOUNDER SECTION */
+        .founder-bg { background: var(--surface); }
+        .section-full { padding: 120px 0; }
+        .section-full-inner { max-width: 1400px; margin: 0 auto; padding: 0 64px; }
+
+        .founder-layout {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 100px; align-items: start; margin-top: 80px;
+        }
+        .founder-pullquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem; font-weight: 400; font-style: italic;
+            color: var(--cream); line-height: 1.45;
+            border-left: 3px solid var(--gold); padding-left: 28px; margin-bottom: 36px;
+        }
+        .founder-bio p {
+            font-size: .95rem; color: var(--cream-60); line-height: 1.85; margin-bottom: 20px;
+        }
+        .founder-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem; font-weight: 600; color: var(--cream); line-height: 1; margin-bottom: 8px;
+        }
+        .founder-title {
+            font-size: .68rem; letter-spacing: .24em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 40px;
+        }
+        .founder-contact { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
+        .contact-link {
+            display: flex; align-items: center; gap: 16px;
+            color: var(--cream-60); text-decoration: none; font-size: .85rem; transition: color .3s;
+        }
+        .contact-link:hover { color: var(--cream); }
+        .contact-link-icon {
+            width: 36px; height: 36px; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: .78rem; font-weight: 700; font-style: normal;
+            flex-shrink: 0; color: var(--cream-30);
+            transition: border-color .3s, color .3s, background .3s; letter-spacing: .04em;
+        }
+        .contact-link:hover .contact-link-icon {
+            border-color: var(--gold); color: var(--gold); background: var(--gold-dim);
+        }
+        .guarantee-banner {
+            background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.25);
+            padding: 28px 32px; display: flex; align-items: flex-start; gap: 20px;
+        }
+        .guarantee-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+        .guarantee-text h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem; font-weight: 600; color: var(--gold); margin-bottom: 8px;
+        }
+        .guarantee-text p { font-size: .84rem; color: var(--cream-60); line-height: 1.65; }
+
+        /* FOOTER */
+        footer {
+            background: var(--surface); border-top: 1px solid var(--border);
+            padding: 48px 64px; display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap; gap: 24px;
+        }
+        .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--cream); }
+        .footer-logo em { font-style: normal; color: var(--gold); }
+        .footer-links { display: flex; gap: 32px; list-style: none; }
+        .footer-links a { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cream-30); text-decoration: none; transition: color .3s; }
+        .footer-links a:hover { color: var(--cream); }
+        .footer-copy { font-size: .72rem; color: var(--cream-30); letter-spacing: .06em; }
+
+        /* REVEAL ANIMATIONS */
+        .reveal-up   { opacity: 0; transform: translateY(40px); }
+        .reveal-left { opacity: 0; transform: translateX(-30px); }
+
+        @media (max-width: 1024px) {
+            nav { padding: 24px 40px; }
+            nav.scrolled { padding: 18px 40px; }
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+            .mobile-nav-overlay { display: flex; }
+            .about-hero { padding: 140px 40px 80px; }
+            .section-full-inner { padding: 0 40px; }
+            .founder-layout { grid-template-columns: 1fr; gap: 60px; }
+            footer { flex-direction: column; gap: 20px; padding: 40px 28px; }
+            .footer-links { flex-wrap: wrap; gap: 16px 28px; justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            nav { padding: 20px 20px; }
+            nav.scrolled { padding: 14px 20px; }
+            .about-hero { padding: 120px 20px 60px; }
+            .section-full-inner { padding: 0 20px; }
+            .founder-name { font-size: 2.2rem; }
+            .founder-pullquote { font-size: 1.3rem; }
+            .founder-bio p { font-size: .88rem; }
+            .guarantee-banner { padding: 22px 22px; gap: 16px; }
+            footer { padding: 36px 20px; }
+            .footer-links { gap: 12px 20px; }
+            .footer-copy { text-align: center; font-size: .68rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div id="progress"></div>
+
+    <!-- Navigation -->
+    <nav id="nav">
+        <a href="/" class="logo" aria-label="MedMasters home">Med<em>Masters</em></a>
+        <ul class="nav-links">
+            <li><a href="/#process">Process</a></li>
+            <li><a href="/#results">Results</a></li>
+            <li><a href="/#testimonials">Testimonials</a></li>
+            <li><a href="/about.html" class="active">About</a></li>
+        </ul>
+        <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="nav-btn"><span>Book Discovery Call</span></a>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Open navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav-overlay" id="mobileOverlay" aria-hidden="true">
+        <ul class="mobile-nav-list">
+            <li><a href="/#process">Process</a></li>
+            <li><a href="/#results">Results</a></li>
+            <li><a href="/#testimonials">Testimonials</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="mobile-cta-link">Book Discovery Call</a></li>
+        </ul>
+    </div>
+
+    <!-- Page Title -->
+    <div class="about-hero">
+        <div class="tag reveal-left">The Founder</div>
+        <h1 class="h2 reveal-up">
+            Built by an operator.<br>
+            <em>Not an agency.</em>
+        </h1>
+    </div>
+
+    <!-- Founder Content -->
+    <div class="founder-bg section-full">
+        <div class="section-full-inner">
+            <div class="founder-layout">
+                <div class="founder-bio reveal-up">
+                    <div class="founder-pullquote">
+                        "I don't think like a marketer. I think like a buyer and an owner — because that's exactly where I come from."
+                    </div>
+                    <p>My background is on the finance and operator side: buying, growing, and helping private clinics exit. I have been inside the P&amp;L, dealt with lumpy schedules, and watched good clinics bleed revenue because nobody had the time or system to follow up with patients who already said yes once.</p>
+                    <p>That is why I built MedMasters. Not to sell clinics another marketing project — but to install a revenue engine that runs without your front desk, without your time, and without a dollar in ad spend.</p>
+                    <p>If you run a cash-pay clinic with 1,000+ patients in your database, there is almost certainly $20K–$60K hiding in it. We find it, and we bring it back.</p>
+                </div>
+
+                <div class="founder-right reveal-up">
+                    <div class="founder-name">Kevin Lee</div>
+                    <div class="founder-title">Founder, MedMasters</div>
+
+                    <div class="founder-contact">
+                        <a href="https://linkedin.com/in/kevinlee1021" target="_blank" rel="noopener noreferrer" class="contact-link">
+                            <div class="contact-link-icon">in</div>
+                            linkedin.com/in/kevinlee1021
+                        </a>
+                        <a href="https://www.instagram.com/kevinlee.official" target="_blank" rel="noopener noreferrer" class="contact-link">
+                            <div class="contact-link-icon">ig</div>
+                            @kevinlee.official
+                        </a>
+                        <a href="mailto:kevin@med-masters.com" class="contact-link">
+                            <div class="contact-link-icon">@</div>
+                            kevin@med-masters.com
+                        </a>
+                        <a href="tel:+16268411724" class="contact-link">
+                            <div class="contact-link-icon">☎</div>
+                            +1 (626) 841-1724
+                        </a>
+                    </div>
+
+                    <div class="guarantee-banner">
+                        <div class="guarantee-icon">🛡</div>
+                        <div class="guarantee-text">
+                            <h4>The 30-Day Guarantee</h4>
+                            <p>30 booked and 20 shown patients in your first 30 days — or we work for free.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">Med<em>Masters</em></div>
+        <ul class="footer-links">
+            <li><a href="/#process">How It Works</a></li>
+            <li><a href="/#results">Results</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="https://linkedin.com/in/kevinlee1021" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="https://www.instagram.com/kevinlee.official" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer">Book a Call</a></li>
+        </ul>
+        <div class="footer-copy">© 2025 MedMasters · kevin@med-masters.com · +1 (626) 841-1724</div>
+    </footer>
+
+    <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hamburger
+    const hamburger     = document.getElementById('navHamburger');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    hamburger.addEventListener('click', () => {
+        const isOpen = hamburger.classList.toggle('open');
+        mobileOverlay.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', isOpen);
+        mobileOverlay.setAttribute('aria-hidden', !isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    mobileOverlay.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            mobileOverlay.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            mobileOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Cursor
+    const dot  = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animCursor() {
+        dot.style.left  = mx + 'px'; dot.style.top  = my + 'px';
+        rx += (mx - rx) * .11; ry += (my - ry) * .11;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(animCursor);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+        el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+    });
+
+    // Progress + nav scroll
+    const progress = document.getElementById('progress');
+    const nav      = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+        const st = window.scrollY;
+        const dh = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = (st / dh * 100) + '%';
+        nav.classList.toggle('scrolled', st > 60);
+    });
+
+    // Reveal animations
+    gsap.utils.toArray('.reveal-up').forEach(el => {
+        gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    });
+    gsap.utils.toArray('.reveal-left').forEach(el => {
+        gsap.to(el, { opacity: 1, x: 0, duration: .9, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    });
+
+    // Trigger reveals that are already in view on load
+    ScrollTrigger.refresh();
+    document.querySelectorAll('.reveal-up, .reveal-left').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95) {
+            gsap.to(el, { opacity: 1, x: 0, y: 0, duration: .9, ease: 'power3.out' });
+        }
+    });
+    </script>
+</body>
+</html>
