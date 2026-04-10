@@ -912,76 +912,227 @@
         }
 
         /* ══════════════════════════════════════
-           TESTIMONIALS
+           STAT BLANK
         ══════════════════════════════════════ */
-        .testi-bg { background: var(--bg); }
-
-        .testi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3px;
-            margin-top: 80px;
+        .stat-blank {
+            font-size: 3rem;
+            color: var(--cream-30);
+            letter-spacing: .1em;
         }
 
-        .testi-card {
+        /* ══════════════════════════════════════
+           CASE PLACEHOLDER
+        ══════════════════════════════════════ */
+        .case-placeholder {
+            background: var(--bg);
+            border: 1px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 260px;
+        }
+
+        .case-placeholder-inner {
+            text-align: center;
+        }
+
+        .case-placeholder-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            opacity: .4;
+        }
+
+        .case-placeholder-inner p {
+            font-size: .78rem;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--cream-30);
+        }
+
+        /* ══════════════════════════════════════
+           TESTIMONIALS — SCROLLING TICKER
+        ══════════════════════════════════════ */
+        .testi-bg { background: var(--bg); padding-bottom: 0; }
+
+        .tscroll-wrap {
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* fade edges */
+        .tscroll-wrap::before,
+        .tscroll-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 200px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .tscroll-wrap::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--bg), transparent);
+        }
+
+        .tscroll-wrap::after {
+            right: 0;
+            background: linear-gradient(-90deg, var(--bg), transparent);
+        }
+
+        .tscroll-track {
+            display: flex;
+            gap: 3px;
+            width: max-content;
+            will-change: transform;
+        }
+
+        .tscroll-left  { animation: scrollLeft  40s linear infinite; }
+        .tscroll-right { animation: scrollRight 36s linear infinite; }
+
+        @keyframes scrollLeft  { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+        .tscroll-wrap:hover .tscroll-track { animation-play-state: paused; }
+
+        .tscard {
             background: var(--surface);
-            padding: 52px 44px;
+            padding: 40px 44px;
+            width: 420px;
+            flex-shrink: 0;
             position: relative;
             overflow: hidden;
-            transition: transform .4s;
+            transition: background .3s;
         }
 
-        .testi-card:hover { transform: translateY(-6px); }
+        .tscard:hover { background: var(--surface-2); }
 
-        .testi-mark {
+        .tscard::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 2px;
+            background: var(--gold);
+            transition: width .5s ease;
+        }
+
+        .tscard:hover::before { width: 100%; }
+
+        .tscard-mark {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 7rem;
-            line-height: .8;
-            color: rgba(201,168,76,0.07);
-            margin-bottom: 8px;
+            font-size: 5rem;
+            line-height: .75;
+            color: rgba(201,168,76,0.08);
+            margin-bottom: 4px;
             user-select: none;
         }
 
-        .testi-quote {
+        .tscard-quote {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.22rem;
+            font-size: 1.08rem;
             font-weight: 400;
             color: var(--cream);
             line-height: 1.6;
-            margin-bottom: 36px;
+            margin-bottom: 28px;
         }
 
-        .testi-author {
+        .tscard-author {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
         }
 
-        .testi-avatar {
-            width: 44px;
-            height: 44px;
+        .tscard-avatar {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold), var(--teal));
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1rem;
+            font-size: .88rem;
             font-weight: 700;
             color: var(--bg);
             flex-shrink: 0;
         }
 
-        .testi-name {
-            font-size: .88rem;
+        .tscard-name {
+            font-size: .82rem;
             font-weight: 600;
             color: var(--cream);
         }
 
-        .testi-role {
-            font-size: .75rem;
+        .tscard-role {
+            font-size: .72rem;
             color: var(--cream-30);
-            margin-top: 3px;
+            margin-top: 2px;
+        }
+
+        .verified {
+            color: var(--teal);
+            font-size: .65rem;
+        }
+
+        /* ══════════════════════════════════════
+           PROOF IN THE WILD
+        ══════════════════════════════════════ */
+        .proof-section {
+            background: var(--surface);
+        }
+
+        .proof-sub {
+            font-size: .9rem;
+            color: var(--cream-60);
+            margin-top: 20px;
+            margin-bottom: 64px;
+            letter-spacing: .04em;
+        }
+
+        .proof-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+        }
+
+        .proof-card {
+            background: var(--bg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .proof-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .6s cubic-bezier(.76,0,.24,1), filter .4s;
+            filter: grayscale(15%);
+        }
+
+        .proof-card:hover img {
+            transform: scale(1.04);
+            filter: grayscale(0%);
+        }
+
+        .proof-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid transparent;
+            transition: border-color .4s;
+            pointer-events: none;
+        }
+
+        .proof-card:hover::after {
+            border-color: var(--gold);
+        }
+
+        @media (max-width: 900px) {
+            .proof-grid { grid-template-columns: 1fr 1fr; }
+            .tscard { width: 320px; }
         }
 
         /* ══════════════════════════════════════
@@ -1243,27 +1394,19 @@
     <!-- ════ STATS ════ -->
     <div class="stats-bar" id="stats">
         <div class="stat">
-            <div class="stat-num">
-                <span>$</span><span class="counter" data-target="47">0</span><span class="suffix">K</span>
-            </div>
+            <div class="stat-num stat-blank">—</div>
             <div class="stat-label">Avg. Monthly Revenue Recovered</div>
         </div>
         <div class="stat">
-            <div class="stat-num">
-                <span class="counter" data-target="340">0</span><span class="suffix">%</span>
-            </div>
+            <div class="stat-num stat-blank">—</div>
             <div class="stat-label">Average First-Quarter ROI</div>
         </div>
         <div class="stat">
-            <div class="stat-num">
-                <span class="counter" data-target="72">0</span><span class="suffix">%</span>
-            </div>
+            <div class="stat-num stat-blank">—</div>
             <div class="stat-label">Patient Reactivation Rate</div>
         </div>
         <div class="stat">
-            <div class="stat-num">
-                <span class="counter" data-target="90">0</span>
-            </div>
+            <div class="stat-num stat-blank">—</div>
             <div class="stat-label">Days to Measurable Results</div>
         </div>
     </div>
@@ -1405,52 +1548,10 @@
                 </div>
 
                 <div class="results-cases">
-                    <div class="case-card reveal-up">
-                        <div class="case-spec">General Dentistry · Phoenix, AZ</div>
-                        <div class="case-quote">"We had 800+ patients we'd written off as gone. MedMasters brought 212 of them back in 60 days — without a single cold ad."</div>
-                        <div class="case-numbers">
-                            <div>
-                                <div class="case-num-val">$62K</div>
-                                <div class="case-num-label">Revenue in 60 Days</div>
-                            </div>
-                            <div>
-                                <div class="case-num-val">26%</div>
-                                <div class="case-num-label">Reactivation Rate</div>
-                            </div>
-                            <div>
-                                <div class="case-num-val">14×</div>
-                                <div class="case-num-label">ROI on Spend</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="case-card reveal-up">
-                        <div class="case-spec">Family Medicine · Austin, TX</div>
-                        <div class="case-quote">"First month alone covered our entire annual marketing budget. The ROI was genuinely absurd — in the best way possible."</div>
-                        <div class="case-numbers">
-                            <div>
-                                <div class="case-num-val">$38K</div>
-                                <div class="case-num-label">First Month Revenue</div>
-                            </div>
-                            <div>
-                                <div class="case-num-val">490%</div>
-                                <div class="case-num-label">Quarter-One ROI</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="case-card reveal-up">
-                        <div class="case-spec">Dermatology Group · Miami, FL</div>
-                        <div class="case-quote">"We scaled to 3 locations. MedMasters' reactivation infrastructure runs in the background across all sites, consistently."</div>
-                        <div class="case-numbers">
-                            <div>
-                                <div class="case-num-val">$2.1M</div>
-                                <div class="case-num-label">Annual Recurring Revenue</div>
-                            </div>
-                            <div>
-                                <div class="case-num-val">3×</div>
-                                <div class="case-num-label">Location Expansion</div>
-                            </div>
+                    <div class="case-placeholder reveal-up">
+                        <div class="case-placeholder-inner">
+                            <div class="case-placeholder-icon">📊</div>
+                            <p>Case studies coming soon.</p>
                         </div>
                     </div>
                 </div>
@@ -1459,55 +1560,216 @@
     </div>
 
     <!-- ════ TESTIMONIALS ════ -->
-    <div class="testi-bg section-full" id="testimonials">
+    <div class="testi-bg" id="testimonials">
+        <div class="section-full-inner" style="padding: 140px 0 0;">
+            <div style="padding: 0 64px;">
+                <div class="tag reveal-left">What Partners Say</div>
+                <h2 class="h2 reveal-up">
+                    Real doctors.<br>
+                    <em>Real words.</em>
+                </h2>
+            </div>
+        </div>
+
+        <!-- Row 1 — scrolls left -->
+        <div class="tscroll-wrap" style="margin-top: 64px;">
+            <div class="tscroll-track tscroll-left" id="trow1">
+                <!-- Row 1 cards: Julie Ling, Adonis Alejandro, Nelly Gal, Robert Tseng — doubled for seamless loop -->
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">We've worked with a lot of marketing companies, but Med-Masters is on another level. They focus on what actually brings a return — not fluff or vanity metrics. Our business has grown in ways we can measure, and that says it all.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">JL</div>
+                        <div>
+                            <div class="tscard-name">Julie Ling <span class="verified">✓</span></div>
+                            <div class="tscard-role">Oct 10, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">In only two and a half, three weeks you helped us raise our production by about 35 to 40%. Our visits went from 65–70 visits a week to currently 94–105 visits a week. We have a real shot at doubling the business this month.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">AA</div>
+                        <div>
+                            <div class="tscard-name">Adonis Alejandro <span class="verified">✓</span></div>
+                            <div class="tscard-role">Oct 15, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">I wish I had known of your services before! I have spent hundreds of thousands of dollars trying to pay agencies to deliver not even 10% of the results you have achieved for my clinic. Forever grateful!</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">NG</div>
+                        <div>
+                            <div class="tscard-name">Nelly Gal <span class="verified">✓</span></div>
+                            <div class="tscard-role">Oct 10, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">With Kevin's help, I overcame my fears. I trained my staff, learned to take control of my schedule, and now I'm able to spend more time with my family while running a successful business.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">RT</div>
+                        <div>
+                            <div class="tscard-name">Robert Tseng <span class="verified">✓</span></div>
+                            <div class="tscard-role">Sep 11, 2024</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Duplicate for seamless loop -->
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">We've worked with a lot of marketing companies, but Med-Masters is on another level. They focus on what actually brings a return — not fluff or vanity metrics. Our business has grown in ways we can measure, and that says it all.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">JL</div>
+                        <div>
+                            <div class="tscard-name">Julie Ling <span class="verified">✓</span></div>
+                            <div class="tscard-role">Oct 10, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">In only two and a half, three weeks you helped us raise our production by about 35 to 40%. Our visits went from 65–70 visits a week to currently 94–105 visits a week. We have a real shot at doubling the business this month.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">AA</div>
+                        <div>
+                            <div class="tscard-name">Adonis Alejandro <span class="verified">✓</span></div>
+                            <div class="tscard-role">Oct 15, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">I wish I had known of your services before! I have spent hundreds of thousands of dollars trying to pay agencies to deliver not even 10% of the results you have achieved for my clinic. Forever grateful!</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">NG</div>
+                        <div>
+                            <div class="tscard-name">Nelly Gal <span class="verified">✓</span></div>
+                            <div class="tscard-role">Oct 10, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">With Kevin's help, I overcame my fears. I trained my staff, learned to take control of my schedule, and now I'm able to spend more time with my family while running a successful business.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">RT</div>
+                        <div>
+                            <div class="tscard-name">Robert Tseng <span class="verified">✓</span></div>
+                            <div class="tscard-role">Sep 11, 2024</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2 — scrolls right -->
+        <div class="tscroll-wrap" style="margin-top: 3px; margin-bottom: 0;">
+            <div class="tscroll-track tscroll-right" id="trow2">
+                <!-- Row 2 cards: Jennifer Tsai, Metropolitan Optometry, Mario Gonzalez — doubled -->
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">Prior to meeting Kevin and MedMasters, our office was stuck in a rut. By working with Kevin, he helped us see that running promotions does not make you salesy — it actually makes your patients feel more appreciated.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">JT</div>
+                        <div>
+                            <div class="tscard-name">Jennifer Tsai <span class="verified">✓</span></div>
+                            <div class="tscard-role">Jan 3, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">When we first started working together, I was at the lowest point of my career. COVID disrupted my entire business model. Your advice helped me realize that my past model did not truly provide value — and gave me the confidence to build a new plan.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">MO</div>
+                        <div>
+                            <div class="tscard-name">Metropolitan Optometry <span class="verified">✓</span></div>
+                            <div class="tscard-role">May 30, 2024</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">For the past four months, Kevin has been helping me with my webpage development, patient engagement, and acquisition with the use of AI. I've been very impressed with his professionalism and knowledge, and I'm excited for the road ahead.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">MG</div>
+                        <div>
+                            <div class="tscard-name">Mario Gonzalez <span class="verified">✓</span></div>
+                            <div class="tscard-role">Nov 12, 2024</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Duplicate -->
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">Prior to meeting Kevin and MedMasters, our office was stuck in a rut. By working with Kevin, he helped us see that running promotions does not make you salesy — it actually makes your patients feel more appreciated.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">JT</div>
+                        <div>
+                            <div class="tscard-name">Jennifer Tsai <span class="verified">✓</span></div>
+                            <div class="tscard-role">Jan 3, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">When we first started working together, I was at the lowest point of my career. COVID disrupted my entire business model. Your advice helped me realize that my past model did not truly provide value — and gave me the confidence to build a new plan.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">MO</div>
+                        <div>
+                            <div class="tscard-name">Metropolitan Optometry <span class="verified">✓</span></div>
+                            <div class="tscard-role">May 30, 2024</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tscard">
+                    <div class="tscard-mark">"</div>
+                    <div class="tscard-quote">For the past four months, Kevin has been helping me with my webpage development, patient engagement, and acquisition with the use of AI. I've been very impressed with his professionalism and knowledge, and I'm excited for the road ahead.</div>
+                    <div class="tscard-author">
+                        <div class="tscard-avatar">MG</div>
+                        <div>
+                            <div class="tscard-name">Mario Gonzalez <span class="verified">✓</span></div>
+                            <div class="tscard-role">Nov 12, 2024</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ PROOF IN THE WILD ════ -->
+    <div class="proof-section section-full">
         <div class="section-full-inner">
-            <div class="tag reveal-left">What Partners Say</div>
+            <div class="tag reveal-left">Results In The Wild</div>
             <h2 class="h2 reveal-up">
-                Real doctors.<br>
-                <em>Real words.</em>
+                Straight from<br>
+                <em>the inbox.</em>
             </h2>
+            <p class="proof-sub reveal-up">Unfiltered messages from clients as campaigns went live.</p>
 
-            <div class="testi-grid">
-                <div class="testi-card reveal-up">
-                    <div class="testi-mark">"</div>
-                    <div class="testi-quote">
-                        "I was skeptical — I'd tried reactivation campaigns before and gotten nothing. MedMasters was completely different. They treated my patients like people, not a list to blast."
-                    </div>
-                    <div class="testi-author">
-                        <div class="testi-avatar">MW</div>
-                        <div>
-                            <div class="testi-name">Dr. Marcus Webb</div>
-                            <div class="testi-role">Oral & Maxillofacial Surgery</div>
-                        </div>
-                    </div>
+            <div class="proof-grid">
+                <div class="proof-card reveal-up">
+                    <img src="assets/proof-1.png" alt="Client result — Dr. Aaries Oda DC, 61 bookings in 3 days" loading="lazy">
                 </div>
-
-                <div class="testi-card reveal-up">
-                    <div class="testi-mark">"</div>
-                    <div class="testi-quote">
-                        "Within 45 days we had patients calling us — people we hadn't seen in 3 years. The messaging was so personalized, they thought we wrote it ourselves."
-                    </div>
-                    <div class="testi-author">
-                        <div class="testi-avatar">SK</div>
-                        <div>
-                            <div class="testi-name">Dr. Sarah Kim</div>
-                            <div class="testi-role">Functional Medicine · Chicago</div>
-                        </div>
-                    </div>
+                <div class="proof-card reveal-up">
+                    <img src="assets/proof-3.png" alt="Client result — 18 leads, 10 booked" loading="lazy">
                 </div>
-
-                <div class="testi-card reveal-up">
-                    <div class="testi-mark">"</div>
-                    <div class="testi-quote">
-                        "The discovery call sold me. They showed me exactly how much revenue was sitting untapped in my database. It was a number I could not ignore."
-                    </div>
-                    <div class="testi-author">
-                        <div class="testi-avatar">JR</div>
-                        <div>
-                            <div class="testi-name">Dr. James Rivera</div>
-                            <div class="testi-role">Multi-location Pediatrics</div>
-                        </div>
-                    </div>
+                <div class="proof-card reveal-up">
+                    <img src="assets/proof-4.png" alt="Client result — books filled until next Tuesday on day 2 of 5" loading="lazy">
+                </div>
+                <div class="proof-card reveal-up">
+                    <img src="assets/proof-6.png" alt="Client result — 2 clients booked, $1k on the books" loading="lazy">
+                </div>
+                <div class="proof-card reveal-up">
+                    <img src="assets/proof-5.png" alt="Client result — 4 yes replies right off launch" loading="lazy">
+                </div>
+                <div class="proof-card reveal-up">
+                    <img src="assets/proof-2.png" alt="Client result — most service oriented marketer" loading="lazy">
                 </div>
             </div>
         </div>
@@ -1805,24 +2067,7 @@
     gsap.to('.hero-sub',     { opacity: 1, duration: .9, delay: 1.1, ease: 'power3.out' });
     gsap.to('.hero-actions', { opacity: 1, duration: .9, delay: 1.35, ease: 'power3.out' });
 
-    // Counters
-    document.querySelectorAll('.counter').forEach(el => {
-        const target = +el.dataset.target;
-        ScrollTrigger.create({
-            trigger: el,
-            start: 'top 80%',
-            once: true,
-            onEnter() {
-                const obj = { val: 0 };
-                gsap.to(obj, {
-                    val: target,
-                    duration: 2,
-                    ease: 'power2.out',
-                    onUpdate() { el.textContent = Math.round(obj.val); },
-                });
-            }
-        });
-    });
+    // Counters disabled — stats are blank for now
 
     // Reveal animations
     document.querySelectorAll('.reveal-up').forEach(el => {
@@ -1852,7 +2097,7 @@
     /* ══════════════════════════════════════
        3D CARD TILT
     ══════════════════════════════════════ */
-    document.querySelectorAll('.process-step, .testi-card, .why-card').forEach(card => {
+    document.querySelectorAll('.process-step, .why-card').forEach(card => {
         card.addEventListener('mousemove', e => {
             const r = card.getBoundingClientRect();
             const x = e.clientX - r.left;
@@ -1912,33 +2157,17 @@
     );
 
     /* ══════════════════════════════════════
-       CASE CARDS STAGGER
+       PROOF GRID STAGGER
     ══════════════════════════════════════ */
-    gsap.fromTo('.case-card',
-        { opacity: 0, y: 50 },
+    gsap.fromTo('.proof-card',
+        { opacity: 0, y: 40 },
         {
             opacity: 1,
             y: 0,
-            duration: 1,
-            stagger: .18,
+            duration: .9,
+            stagger: .1,
             ease: 'power3.out',
-            scrollTrigger: { trigger: '.results-cases', start: 'top 80%', once: true },
-        }
-    );
-
-    /* ══════════════════════════════════════
-       TESTIMONIAL STAGGER
-    ══════════════════════════════════════ */
-    gsap.fromTo('.testi-card',
-        { opacity: 0, y: 40, rotation: 1 },
-        {
-            opacity: 1,
-            y: 0,
-            rotation: 0,
-            duration: 1,
-            stagger: .15,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: '.testi-grid', start: 'top 80%', once: true },
+            scrollTrigger: { trigger: '.proof-grid', start: 'top 80%', once: true },
         }
     );
 
