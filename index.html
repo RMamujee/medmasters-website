@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedMasters — Patient Reactivation Specialists</title>
+    <meta name="description" content="MedMasters transforms your dormant patient list into a predictable revenue stream. Book a discovery call to see how much is hiding in your database.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* ══════════════════════════════════════
+           RESET & TOKENS
+        ══════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:           #06060d;
+            --surface:      #0c0c1a;
+            --surface-2:    #111124;
+            --gold:         #c9a84c;
+            --gold-light:   #e4c878;
+            --gold-dim:     rgba(201,168,76,0.12);
+            --gold-glow:    rgba(201,168,76,0.08);
+            --teal:         #00d4aa;
+            --teal-dim:     rgba(0,212,170,0.1);
+            --cream:        #f0ead8;
+            --cream-60:     rgba(240,234,216,0.6);
+            --cream-30:     rgba(240,234,216,0.3);
+            --cream-10:     rgba(240,234,216,0.1);
+            --border:       rgba(201,168,76,0.12);
+            --radius:       0px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--cream);
+            font-family: 'Syne', sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Noise overlay ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.25;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        }
+
+        /* ══════════════════════════════════════
+           CURSOR
+        ══════════════════════════════════════ */
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: transform .15s, width .3s, height .3s, background .3s;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(201,168,76,0.55);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%,-50%);
+        }
+
+        .cursor-dot.hovered  { width: 16px; height: 16px; background: var(--teal); }
+        .cursor-ring.hovered { border-color: var(--teal); width: 56px; height: 56px; }
+
+        /* ══════════════════════════════════════
+           PROGRESS BAR
+        ══════════════════════════════════════ */
+        #progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--gold), var(--teal));
+            z-index: 9001;
+            transition: width .05s linear;
+        }
+
+        /* ══════════════════════════════════════
+           NAVIGATION
+        ══════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 500;
+            padding: 28px 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translateY(-110%);
+            transition: background .5s, border-color .5s, backdrop-filter .5s;
+        }
+
+        nav.visible { transform: translateY(0); }
+
+        nav.scrolled {
+            background: rgba(6,6,13,0.88);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 64px;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--cream);
+            text-decoration: none;
+            letter-spacing: .04em;
+        }
+        .logo em { font-style: normal; color: var(--gold); }
+
+        .nav-links {
+            display: flex;
+            gap: 44px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--cream-60);
+            text-decoration: none;
+            font-size: .78rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            position: relative;
+            transition: color .3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width .35s cubic-bezier(.76,0,.24,1);
+        }
+
+        .nav-links a:hover { color: var(--cream); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 11px 30px;
+            font-family: 'Syne', sans-serif;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: color .4s;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .4s cubic-bezier(.76,0,.24,1);
+        }
+
+        .nav-btn:hover { color: var(--bg); }
+        .nav-btn:hover::before { transform: scaleX(1); }
+        .nav-btn span { position: relative; z-index: 1; }
+
+        /* ══════════════════════════════════════
+           FLOATING CTA
+        ══════════════════════════════════════ */
+        .float-cta {
+            position: fixed;
+            bottom: 40px;
+            right: 48px;
+            z-index: 400;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .5s, transform .5s;
+            pointer-events: none;
+        }
+
+        .float-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .float-cta a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--gold);
+            color: var(--bg);
+            padding: 14px 28px;
+            font-family: 'Syne', sans-serif;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .float-cta a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--teal);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .4s cubic-bezier(.76,0,.24,1);
+        }
+
+        .float-cta a:hover::before { transform: scaleX(1); }
+        .float-cta a > * { position: relative; z-index: 1; }
+
+        .float-pulse {
+            width: 8px; height: 8px;
+            background: var(--bg);
+            border-radius: 50%;
+            animation: floatPulse 1.8s infinite;
+        }
+
+        @keyframes floatPulse {
+            0%,100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(.6); opacity: .5; }
+        }
+
+        /* ══════════════════════════════════════
+           HERO
+        ══════════════════════════════════════ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* subtle gradient mask on canvas edges */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 80% at 70% 50%, transparent 50%, var(--bg) 100%),
+                linear-gradient(180deg, transparent 60%, var(--bg) 100%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            padding: 0 64px;
+            padding-top: 160px;
+            padding-bottom: 120px;
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        /* badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+            padding: 9px 20px;
+            margin-bottom: 48px;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .badge-dot {
+            width: 6px; height: 6px;
+            background: var(--teal);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%,100% { opacity: 1; }
+            50% { opacity: .25; }
+        }
+
+        .badge-text {
+            font-size: .7rem;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--cream-60);
+        }
+
+        /* headline */
+        .hero-h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4.5rem, 10vw, 10.5rem);
+            font-weight: 300;
+            line-height: .93;
+            letter-spacing: -.02em;
+            margin-bottom: 40px;
+        }
+
+        .hero-h1 .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-h1 .word {
+            display: inline-block;
+            transform: translateY(115%);
+            opacity: 0;
+        }
+
+        .hero-h1 em {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        .hero-h1 .line-indent { padding-left: 14vw; }
+        .hero-h1 .line-indent2 { padding-left: 6vw; }
+
+        .hero-sub {
+            font-size: 1.08rem;
+            color: var(--cream-60);
+            max-width: 440px;
+            line-height: 1.75;
+            margin-bottom: 56px;
+            opacity: 0;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            opacity: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 52px;
+            font-family: 'Syne', sans-serif;
+            font-size: .8rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: color .4s;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--bg);
+        }
+
+        .btn-gold::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--teal);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .5s cubic-bezier(.76,0,.24,1);
+        }
+
+        .btn-gold:hover::before { transform: scaleX(1); }
+        .btn-gold > * { position: relative; z-index: 1; }
+
+        .btn-arrow {
+            display: inline-flex;
+            align-items: center;
+            transition: transform .3s;
+        }
+
+        .btn:hover .btn-arrow { transform: translateX(8px); }
+
+        .scroll-hint {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--cream-30);
+            font-size: .72rem;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 44px;
+            height: 1px;
+            background: var(--cream-10);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            animation: scanline 2.2s cubic-bezier(.76,0,.24,1) infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        /* ══════════════════════════════════════
+           MARQUEE
+        ══════════════════════════════════════ */
+        .marquee-wrap {
+            overflow: hidden;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 0;
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 0;
+            animation: marqueeScroll 30s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            padding: 0 32px;
+            white-space: nowrap;
+            font-size: .68rem;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--cream-30);
+        }
+
+        .marquee-item .dot {
+            width: 4px; height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ══════════════════════════════════════
+           STATS BAR
+        ══════════════════════════════════════ */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--bg);
+        }
+
+        .stat {
+            padding: 64px 48px;
+            border-right: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat:last-child { border-right: none; }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 0;
+            background: var(--gold-dim);
+            transition: height .6s ease;
+        }
+
+        .stat:hover::before { height: 100%; }
+
+        .stat-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.2rem;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+
+        .stat-num .suffix {
+            font-size: 2rem;
+            font-style: italic;
+        }
+
+        .stat-label {
+            font-size: .68rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--cream-30);
+            margin-top: 12px;
+        }
+
+        /* ══════════════════════════════════════
+           SECTIONS — SHARED
+        ══════════════════════════════════════ */
+        .section {
+            padding: 140px 64px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-full {
+            padding: 140px 64px;
+        }
+
+        .section-full-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            font-size: .65rem;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 28px;
+        }
+
+        .tag::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.8rem, 5.5vw, 5.5rem);
+            font-weight: 300;
+            line-height: 1.05;
+            letter-spacing: -.015em;
+        }
+
+        .h2 em {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        /* ══════════════════════════════════════
+           PROBLEM SECTION
+        ══════════════════════════════════════ */
+        .problem-bg {
+            background: var(--bg);
+            position: relative;
+        }
+
+        /* grid texture behind problem section */
+        .problem-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: .03;
+            background-image:
+                linear-gradient(var(--cream) 1px, transparent 1px),
+                linear-gradient(90deg, var(--cream) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: start;
+            margin-top: 80px;
+        }
+
+        .problem-copy p {
+            font-size: 1.1rem;
+            color: var(--cream-60);
+            line-height: 1.85;
+            margin-bottom: 28px;
+        }
+
+        .problem-copy strong { color: var(--cream); font-weight: 700; }
+
+        .problem-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .problem-card {
+            background: var(--surface);
+            padding: 36px 40px;
+            border-left: 3px solid transparent;
+            transition: border-color .35s, background .35s, transform .35s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold-glow);
+            opacity: 0;
+            transition: opacity .35s;
+        }
+
+        .problem-card:hover {
+            border-left-color: var(--gold);
+            transform: translateX(4px);
+        }
+
+        .problem-card:hover::after { opacity: 1; }
+
+        .problem-card-icon {
+            font-size: 1.4rem;
+            margin-bottom: 14px;
+        }
+
+        .problem-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 10px;
+        }
+
+        .problem-card p {
+            font-size: .88rem;
+            color: var(--cream-60);
+            line-height: 1.65;
+        }
+
+        /* ══════════════════════════════════════
+           PROCESS
+        ══════════════════════════════════════ */
+        .process-bg {
+            background: var(--surface);
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin-top: 80px;
+        }
+
+        .process-step {
+            background: var(--bg);
+            padding: 52px 44px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .4s;
+        }
+
+        .process-step:hover { transform: translateY(-4px); }
+
+        .step-glow {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--gold-glow), transparent 60%);
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .process-step:hover .step-glow { opacity: 1; }
+
+        .step-number {
+            position: absolute;
+            top: 28px;
+            right: 28px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 5rem;
+            font-weight: 300;
+            color: rgba(201,168,76,0.07);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .step-icon {
+            width: 54px;
+            height: 54px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 36px;
+            font-size: 1.3rem;
+            position: relative;
+        }
+
+        .process-step h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 18px;
+            line-height: 1.2;
+        }
+
+        .process-step p {
+            font-size: .88rem;
+            color: var(--cream-60);
+            line-height: 1.75;
+        }
+
+        /* ══════════════════════════════════════
+           WHY MEDMASTERS
+        ══════════════════════════════════════ */
+        .why-bg { background: var(--bg); }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3px;
+            margin-top: 80px;
+        }
+
+        .why-card {
+            background: var(--surface);
+            padding: 52px 48px;
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            transition: background .35s;
+        }
+
+        .why-card:hover { background: var(--surface-2); }
+
+        .why-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+            flex-shrink: 0;
+            width: 64px;
+        }
+
+        .why-body h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 12px;
+        }
+
+        .why-body p {
+            font-size: .88rem;
+            color: var(--cream-60);
+            line-height: 1.7;
+        }
+
+        /* ══════════════════════════════════════
+           RESULTS
+        ══════════════════════════════════════ */
+        .results-bg { background: var(--surface); }
+
+        .results-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 80px;
+            margin-top: 80px;
+            align-items: start;
+        }
+
+        .results-sidebar {
+            position: sticky;
+            top: 140px;
+        }
+
+        .results-sidebar .h2 { margin-bottom: 32px; }
+
+        .results-sidebar p {
+            font-size: .9rem;
+            color: var(--cream-60);
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gold);
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+            transition: border-color .3s, gap .3s;
+        }
+
+        .sidebar-cta:hover { border-color: var(--gold); gap: 18px; }
+
+        .results-cases {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .case-card {
+            background: var(--bg);
+            padding: 52px;
+            position: relative;
+            overflow: hidden;
+            transition: background .35s;
+        }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--gold);
+            transition: height .5s cubic-bezier(.76,0,.24,1);
+        }
+
+        .case-card:hover::before { height: 100%; }
+        .case-card:hover { background: rgba(6,6,13,1); }
+
+        .case-spec {
+            font-size: .65rem;
+            letter-spacing: .24em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 16px;
+        }
+
+        .case-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--cream);
+            line-height: 1.45;
+            margin-bottom: 40px;
+        }
+
+        .case-numbers {
+            display: flex;
+            gap: 48px;
+        }
+
+        .case-num-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .case-num-label {
+            font-size: .65rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--cream-30);
+            margin-top: 6px;
+        }
+
+        /* ══════════════════════════════════════
+           TESTIMONIALS
+        ══════════════════════════════════════ */
+        .testi-bg { background: var(--bg); }
+
+        .testi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin-top: 80px;
+        }
+
+        .testi-card {
+            background: var(--surface);
+            padding: 52px 44px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .4s;
+        }
+
+        .testi-card:hover { transform: translateY(-6px); }
+
+        .testi-mark {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 7rem;
+            line-height: .8;
+            color: rgba(201,168,76,0.07);
+            margin-bottom: 8px;
+            user-select: none;
+        }
+
+        .testi-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.22rem;
+            font-weight: 400;
+            color: var(--cream);
+            line-height: 1.6;
+            margin-bottom: 36px;
+        }
+
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .testi-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--bg);
+            flex-shrink: 0;
+        }
+
+        .testi-name {
+            font-size: .88rem;
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .testi-role {
+            font-size: .75rem;
+            color: var(--cream-30);
+            margin-top: 3px;
+        }
+
+        /* ══════════════════════════════════════
+           DISCOVERY CTA
+        ══════════════════════════════════════ */
+        .cta-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        #cta-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cta-inner {
+            position: relative;
+            z-index: 10;
+            max-width: 780px;
+            padding: 80px 40px;
+        }
+
+        .cta-inner .tag { justify-content: center; }
+        .cta-inner .tag::before { display: none; }
+
+        .cta-h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3.5rem, 8vw, 8rem);
+            font-weight: 300;
+            line-height: .95;
+            letter-spacing: -.02em;
+            margin-bottom: 28px;
+        }
+
+        .cta-h2 em {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        .cta-sub {
+            font-size: 1.05rem;
+            color: var(--cream-60);
+            line-height: 1.8;
+            margin-bottom: 60px;
+            max-width: 540px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-xl {
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--gold);
+            color: var(--bg);
+            padding: 24px 72px;
+            font-family: 'Syne', sans-serif;
+            font-size: .85rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: color .4s;
+        }
+
+        .btn-xl::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--teal);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .5s cubic-bezier(.76,0,.24,1);
+        }
+
+        .btn-xl:hover::before { transform: scaleX(1); }
+        .btn-xl > * { position: relative; z-index: 1; }
+
+        .cta-note {
+            margin-top: 28px;
+            font-size: .72rem;
+            color: var(--cream-30);
+            letter-spacing: .1em;
+        }
+
+        .cta-note span {
+            color: var(--cream-60);
+        }
+
+        /* ══════════════════════════════════════
+           FOOTER
+        ══════════════════════════════════════ */
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 48px 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--cream);
+        }
+
+        .footer-logo em { font-style: normal; color: var(--gold); }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--cream-30);
+            text-decoration: none;
+            transition: color .3s;
+        }
+
+        .footer-links a:hover { color: var(--cream); }
+
+        .footer-copy {
+            font-size: .72rem;
+            color: var(--cream-30);
+            letter-spacing: .06em;
+        }
+
+        /* ══════════════════════════════════════
+           UTILITIES
+        ══════════════════════════════════════ */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(44px);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-32px);
+        }
+
+        @media (max-width: 900px) {
+            nav { padding: 20px 28px; }
+            .hero-content { padding: 120px 28px 80px; }
+            .hero-h1 .line-indent,
+            .hero-h1 .line-indent2 { padding-left: 0; }
+            .section { padding: 100px 28px; }
+            .section-full { padding: 100px 28px; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .problem-grid { grid-template-columns: 1fr; gap: 60px; }
+            .process-grid { grid-template-columns: 1fr; }
+            .why-grid { grid-template-columns: 1fr; }
+            .results-layout { grid-template-columns: 1fr; }
+            .results-sidebar { position: static; }
+            .testi-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            footer { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Progress -->
+    <div id="progress"></div>
+
+    <!-- Floating CTA -->
+    <div class="float-cta" id="floatCta">
+        <a href="#discovery">
+            <div class="float-pulse"></div>
+            <span>Book Discovery Call</span>
+        </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="nav">
+        <a href="#" class="logo">Med<em>Masters</em></a>
+        <ul class="nav-links">
+            <li><a href="#process">Process</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+        </ul>
+        <a href="#discovery" class="nav-btn"><span>Book Discovery Call</span></a>
+    </nav>
+
+    <!-- ════ HERO ════ -->
+    <section class="hero" id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+
+            <div class="badge">
+                <div class="badge-dot"></div>
+                <span class="badge-text">Patient Reactivation Specialists</span>
+            </div>
+
+            <h1 class="hero-h1">
+                <span class="line">
+                    <span class="word">Your&nbsp;Patients</span>
+                </span>
+                <span class="line line-indent">
+                    <span class="word">Haven't&nbsp;<em>Left.</em></span>
+                </span>
+                <span class="line line-indent2">
+                    <span class="word">They've&nbsp;Been</span>
+                </span>
+                <span class="line">
+                    <span class="word"><em>Forgotten.</em></span>
+                </span>
+            </h1>
+
+            <p class="hero-sub">
+                MedMasters turns your dormant patient list into a predictable revenue engine — without cold ads, new acquisitions, or guesswork.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#discovery" class="btn btn-gold">
+                    <span>Book Discovery Call</span>
+                    <span class="btn-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </a>
+                <div class="scroll-hint">
+                    <div class="scroll-line"></div>
+                    <span>Explore</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════ MARQUEE ════ -->
+    <div class="marquee-wrap">
+        <div class="marquee-track" id="marquee">
+            <!-- items injected by JS -->
+        </div>
+    </div>
+
+    <!-- ════ STATS ════ -->
+    <div class="stats-bar" id="stats">
+        <div class="stat">
+            <div class="stat-num">
+                <span>$</span><span class="counter" data-target="47">0</span><span class="suffix">K</span>
+            </div>
+            <div class="stat-label">Avg. Monthly Revenue Recovered</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">
+                <span class="counter" data-target="340">0</span><span class="suffix">%</span>
+            </div>
+            <div class="stat-label">Average First-Quarter ROI</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">
+                <span class="counter" data-target="72">0</span><span class="suffix">%</span>
+            </div>
+            <div class="stat-label">Patient Reactivation Rate</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">
+                <span class="counter" data-target="90">0</span>
+            </div>
+            <div class="stat-label">Days to Measurable Results</div>
+        </div>
+    </div>
+
+    <!-- ════ PROBLEM ════ -->
+    <div class="problem-bg">
+        <div class="section" id="problem">
+            <div class="tag reveal-left">The Problem</div>
+            <h2 class="h2 reveal-up">
+                Every practice has a<br>
+                <em>goldmine hiding</em><br>
+                in plain sight.
+            </h2>
+
+            <div class="problem-grid">
+                <div class="problem-copy">
+                    <p class="reveal-up">The average medical practice has <strong>over 1,200 inactive patients</strong> sitting dormant in their system — people who came in, trusted your team, and simply drifted away without a reason to return.</p>
+                    <p class="reveal-up">These are not cold prospects. They already know your name. They've sat in your chair. They've trusted your care. <strong>They just need to hear from you again.</strong></p>
+                    <p class="reveal-up">Most practices spend thousands chasing expensive new patient acquisition while their highest-value asset — an existing database full of warm relationships — collects digital dust. MedMasters changes that equation entirely.</p>
+                </div>
+
+                <div class="problem-stack">
+                    <div class="problem-card reveal-up">
+                        <div class="problem-card-icon">⚡</div>
+                        <h3>Silent Revenue Hemorrhage</h3>
+                        <p>Practices lose an average of $14,000 per month from patients who quietly fell off the recall schedule. It's recoverable money — and it's already within reach.</p>
+                    </div>
+                    <div class="problem-card reveal-up">
+                        <div class="problem-card-icon">🎯</div>
+                        <h3>New Patient Obsession</h3>
+                        <p>Marketing budgets chase expensive new acquisitions at $180–$300 per new patient — while existing patients, worth 5x more, go completely unworked.</p>
+                    </div>
+                    <div class="problem-card reveal-up">
+                        <div class="problem-card-icon">📊</div>
+                        <h3>System Blindness</h3>
+                        <p>Your practice software flags inactive patients but offers zero reactivation strategy. Data without action is just an expensive list collecting dust.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ PROCESS ════ -->
+    <div class="process-bg section-full" id="process">
+        <div class="section-full-inner">
+            <div class="tag reveal-left">How It Works</div>
+            <h2 class="h2 reveal-up">
+                Three moves. One<br>
+                <em>reactivated</em> revenue stream.
+            </h2>
+
+            <div class="process-grid">
+                <div class="process-step reveal-up">
+                    <div class="step-glow"></div>
+                    <div class="step-number">01</div>
+                    <div class="step-icon">🔍</div>
+                    <h3>Patient Intelligence Audit</h3>
+                    <p>We dive into your practice management system to identify, segment, and score your entire inactive patient list. Not all dormant patients are equal — we find the highest-value targets first and build a precision reactivation roadmap before a single message is sent.</p>
+                </div>
+                <div class="process-step reveal-up">
+                    <div class="step-glow"></div>
+                    <div class="step-number">02</div>
+                    <div class="step-icon">✉️</div>
+                    <h3>Precision Multi-Channel Outreach</h3>
+                    <p>Personalized sequences across SMS, email, and phone — crafted to feel genuinely human, not automated. Every message reflects your brand voice, your practice name, and specific patient history. No templates. No blasts. Just relevant, thoughtful communication at scale.</p>
+                </div>
+                <div class="process-step reveal-up">
+                    <div class="step-glow"></div>
+                    <div class="step-number">03</div>
+                    <div class="step-icon">📈</div>
+                    <h3>Conversion & Retention Engine</h3>
+                    <p>Getting them back is only step one. We install appointment optimization systems, follow-up cadences, and retention protocols that compound over time — turning a reactivation campaign into permanent, predictable revenue infrastructure your practice runs on.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ WHY MEDMASTERS ════ -->
+    <div class="why-bg section-full" id="why">
+        <div class="section-full-inner">
+            <div class="tag reveal-left">Why MedMasters</div>
+            <h2 class="h2 reveal-up">
+                Built for results.<br>
+                <em>Not retainers.</em>
+            </h2>
+
+            <div class="why-grid">
+                <div class="why-card reveal-up">
+                    <div class="why-num">01</div>
+                    <div class="why-body">
+                        <h3>Performance-Based Model</h3>
+                        <p>We eat what we kill. Our pricing is structured around your results — if we don't generate reactivated revenue, we don't get paid. Zero risk to you.</p>
+                    </div>
+                </div>
+                <div class="why-card reveal-up">
+                    <div class="why-num">02</div>
+                    <div class="why-body">
+                        <h3>HIPAA-Compliant Infrastructure</h3>
+                        <p>Every campaign is built on a fully compliant framework. All communication channels, data handling, and patient outreach is designed with zero compromise on compliance.</p>
+                    </div>
+                </div>
+                <div class="why-card reveal-up">
+                    <div class="why-num">03</div>
+                    <div class="why-body">
+                        <h3>Practice-Specific Messaging</h3>
+                        <p>No templates. No generic blasts. Every outreach sequence is built from scratch to reflect your brand voice, specialty, and patient relationships — and it shows in response rates.</p>
+                    </div>
+                </div>
+                <div class="why-card reveal-up">
+                    <div class="why-num">04</div>
+                    <div class="why-body">
+                        <h3>90-Day Revenue Guarantee</h3>
+                        <p>If MedMasters doesn't cover our entire fee through reactivated patient revenue within 90 days of launch, you pay nothing. We stand behind every engagement, no exceptions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ RESULTS ════ -->
+    <div class="results-bg section-full" id="results">
+        <div class="section-full-inner">
+            <div class="tag reveal-left">Real Results</div>
+
+            <div class="results-layout">
+                <div class="results-sidebar">
+                    <h2 class="h2 reveal-up">
+                        Numbers that<br>
+                        speak louder<br>
+                        <em>than promises.</em>
+                    </h2>
+                    <p class="reveal-up">Real practices. Real patient lists. Real revenue recovered — not projected. These are the actual outcomes from MedMasters campaigns in the last 18 months.</p>
+                    <a href="#discovery" class="sidebar-cta reveal-up">
+                        See What's In Your Database
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="results-cases">
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">General Dentistry · Phoenix, AZ</div>
+                        <div class="case-quote">"We had 800+ patients we'd written off as gone. MedMasters brought 212 of them back in 60 days — without a single cold ad."</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">$62K</div>
+                                <div class="case-num-label">Revenue in 60 Days</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">26%</div>
+                                <div class="case-num-label">Reactivation Rate</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">14×</div>
+                                <div class="case-num-label">ROI on Spend</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">Family Medicine · Austin, TX</div>
+                        <div class="case-quote">"First month alone covered our entire annual marketing budget. The ROI was genuinely absurd — in the best way possible."</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">$38K</div>
+                                <div class="case-num-label">First Month Revenue</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">490%</div>
+                                <div class="case-num-label">Quarter-One ROI</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">Dermatology Group · Miami, FL</div>
+                        <div class="case-quote">"We scaled to 3 locations. MedMasters' reactivation infrastructure runs in the background across all sites, consistently."</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">$2.1M</div>
+                                <div class="case-num-label">Annual Recurring Revenue</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">3×</div>
+                                <div class="case-num-label">Location Expansion</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ TESTIMONIALS ════ -->
+    <div class="testi-bg section-full" id="testimonials">
+        <div class="section-full-inner">
+            <div class="tag reveal-left">What Partners Say</div>
+            <h2 class="h2 reveal-up">
+                Real doctors.<br>
+                <em>Real words.</em>
+            </h2>
+
+            <div class="testi-grid">
+                <div class="testi-card reveal-up">
+                    <div class="testi-mark">"</div>
+                    <div class="testi-quote">
+                        "I was skeptical — I'd tried reactivation campaigns before and gotten nothing. MedMasters was completely different. They treated my patients like people, not a list to blast."
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">MW</div>
+                        <div>
+                            <div class="testi-name">Dr. Marcus Webb</div>
+                            <div class="testi-role">Oral & Maxillofacial Surgery</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testi-card reveal-up">
+                    <div class="testi-mark">"</div>
+                    <div class="testi-quote">
+                        "Within 45 days we had patients calling us — people we hadn't seen in 3 years. The messaging was so personalized, they thought we wrote it ourselves."
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">SK</div>
+                        <div>
+                            <div class="testi-name">Dr. Sarah Kim</div>
+                            <div class="testi-role">Functional Medicine · Chicago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testi-card reveal-up">
+                    <div class="testi-mark">"</div>
+                    <div class="testi-quote">
+                        "The discovery call sold me. They showed me exactly how much revenue was sitting untapped in my database. It was a number I could not ignore."
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">JR</div>
+                        <div>
+                            <div class="testi-name">Dr. James Rivera</div>
+                            <div class="testi-role">Multi-location Pediatrics</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ DISCOVERY CALL CTA ════ -->
+    <section class="cta-section" id="discovery">
+        <canvas id="cta-canvas"></canvas>
+        <div class="cta-inner">
+            <div class="tag">Discovery Call</div>
+            <h2 class="cta-h2 reveal-up">
+                Find out what's<br>
+                <em>sleeping</em> in<br>
+                your database.
+            </h2>
+            <p class="cta-sub reveal-up">
+                In 30 minutes, we audit your patient list live — and show you exactly how much recoverable revenue is sitting untouched. No pitch. No pressure. Just data.
+            </p>
+            <a href="#" class="btn-xl reveal-up">
+                <span>Book Your Free Discovery Call</span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+            <p class="cta-note reveal-up">
+                <span>30 minutes</span> · <span>No commitment</span> · <span>Live patient database audit</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- ════ FOOTER ════ -->
+    <footer>
+        <div class="footer-logo">Med<em>Masters</em></div>
+        <ul class="footer-links">
+            <li><a href="#process">Process</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#discovery">Book a Call</a></li>
+        </ul>
+        <div class="footer-copy">© 2024 MedMasters. Patient Reactivation Specialists.</div>
+    </footer>
+
+
+    <script>
+    /* ══════════════════════════════════════
+       CURSOR
+    ══════════════════════════════════════ */
+    const dot   = document.getElementById('cursorDot');
+    const ring  = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    (function animCursor() {
+        dot.style.left  = mx + 'px';
+        dot.style.top   = my + 'px';
+        rx += (mx - rx) * .11;
+        ry += (my - ry) * .11;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animCursor);
+    })();
+
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+        el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+    });
+
+    /* ══════════════════════════════════════
+       PROGRESS + NAV + FLOAT CTA
+    ══════════════════════════════════════ */
+    const progress  = document.getElementById('progress');
+    const nav       = document.getElementById('nav');
+    const floatCta  = document.getElementById('floatCta');
+    const heroEl    = document.getElementById('hero');
+
+    window.addEventListener('scroll', () => {
+        const st = window.scrollY;
+        const dh = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = (st / dh * 100) + '%';
+        nav.classList.toggle('scrolled', st > 60);
+        const heroBottom = heroEl.getBoundingClientRect().bottom;
+        floatCta.classList.toggle('visible', heroBottom < 0);
+    });
+
+    /* ══════════════════════════════════════
+       HERO CANVAS — PATIENT NETWORK
+    ══════════════════════════════════════ */
+    const heroCanvas = document.getElementById('hero-canvas');
+    const hCtx = heroCanvas.getContext('2d');
+
+    function resizeHero() {
+        heroCanvas.width  = heroCanvas.offsetWidth;
+        heroCanvas.height = heroCanvas.offsetHeight;
+    }
+    resizeHero();
+    window.addEventListener('resize', resizeHero);
+
+    const N = 90;
+    const LINK_DIST = 160;
+    const pts = Array.from({ length: N }, () => ({
+        x:  Math.random() * heroCanvas.width,
+        y:  Math.random() * heroCanvas.height,
+        vx: (Math.random() - .5) * .35,
+        vy: (Math.random() - .5) * .35,
+        r:  Math.random() * 1.8 + .5,
+        op: Math.random() * .4 + .15,
+        pulse: Math.random() * Math.PI * 2,
+    }));
+
+    let hmx = -9999, hmy = -9999;
+    heroCanvas.addEventListener('mousemove', e => {
+        const rc = heroCanvas.getBoundingClientRect();
+        hmx = e.clientX - rc.left;
+        hmy = e.clientY - rc.top;
+    });
+    heroCanvas.addEventListener('mouseleave', () => { hmx = -9999; hmy = -9999; });
+
+    let tick = 0;
+
+    function drawHero() {
+        hCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+        tick++;
+
+        // draw links
+        for (let i = 0; i < pts.length; i++) {
+            for (let j = i + 1; j < pts.length; j++) {
+                const dx = pts[i].x - pts[j].x;
+                const dy = pts[i].y - pts[j].y;
+                const d  = Math.hypot(dx, dy);
+                if (d < LINK_DIST) {
+                    const a = (1 - d / LINK_DIST) * .12;
+                    hCtx.strokeStyle = `rgba(201,168,76,${a})`;
+                    hCtx.lineWidth = .6;
+                    hCtx.beginPath();
+                    hCtx.moveTo(pts[i].x, pts[i].y);
+                    hCtx.lineTo(pts[j].x, pts[j].y);
+                    hCtx.stroke();
+                }
+            }
+        }
+
+        // mouse connections
+        for (const p of pts) {
+            const dx = p.x - hmx;
+            const dy = p.y - hmy;
+            const d  = Math.hypot(dx, dy);
+            if (d < 140) {
+                const a = (1 - d / 140) * .55;
+                hCtx.strokeStyle = `rgba(0,212,170,${a})`;
+                hCtx.lineWidth = .6;
+                hCtx.beginPath();
+                hCtx.moveTo(p.x, p.y);
+                hCtx.lineTo(hmx, hmy);
+                hCtx.stroke();
+                p.vx += (dx / d) * .04;
+                p.vy += (dy / d) * .04;
+            }
+        }
+
+        // draw pts
+        for (const p of pts) {
+            p.pulse += .012;
+            const pOp = p.op + .1 * Math.sin(p.pulse);
+
+            // occasional pulse ring
+            if (Math.floor(p.pulse) % 12 === 0 && Math.sin(p.pulse) > .98) {
+                const ringR = p.r + 10 * (Math.sin(p.pulse) - .98) / .02;
+                hCtx.strokeStyle = `rgba(201,168,76,${pOp * .4})`;
+                hCtx.lineWidth = 1;
+                hCtx.beginPath();
+                hCtx.arc(p.x, p.y, ringR, 0, Math.PI * 2);
+                hCtx.stroke();
+            }
+
+            hCtx.beginPath();
+            hCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            hCtx.fillStyle = `rgba(201,168,76,${pOp})`;
+            hCtx.fill();
+
+            p.x  += p.vx;
+            p.y  += p.vy;
+            p.vx *= .985;
+            p.vy *= .985;
+            p.vx += (Math.random() - .5) * .015;
+            p.vy += (Math.random() - .5) * .015;
+            if (p.x < 0 || p.x > heroCanvas.width)  p.vx *= -1;
+            if (p.y < 0 || p.y > heroCanvas.height) p.vy *= -1;
+        }
+
+        requestAnimationFrame(drawHero);
+    }
+    drawHero();
+
+    /* ══════════════════════════════════════
+       CTA CANVAS — RADAR RINGS
+    ══════════════════════════════════════ */
+    const ctaCanvas = document.getElementById('cta-canvas');
+    const cCtx = ctaCanvas.getContext('2d');
+
+    function resizeCta() {
+        ctaCanvas.width  = ctaCanvas.offsetWidth;
+        ctaCanvas.height = ctaCanvas.offsetHeight;
+    }
+    resizeCta();
+    window.addEventListener('resize', resizeCta);
+
+    function drawCta() {
+        cCtx.clearRect(0, 0, ctaCanvas.width, ctaCanvas.height);
+        const t  = Date.now() * .001;
+        const cx = ctaCanvas.width  / 2;
+        const cy = ctaCanvas.height / 2;
+        const maxR = Math.hypot(cx, cy) * 1.1;
+
+        for (let r = 60; r < maxR; r += 90) {
+            const phase = (r / 90) * .4;
+            const a = .04 + .03 * Math.sin(t * .4 + phase);
+            const offset = 18 * Math.sin(t * .25 + phase);
+            cCtx.strokeStyle = `rgba(201,168,76,${a})`;
+            cCtx.lineWidth = 1;
+            cCtx.beginPath();
+            cCtx.arc(cx, cy, r + offset, 0, Math.PI * 2);
+            cCtx.stroke();
+        }
+
+        // Radar sweep
+        const sweep = t * .6;
+        const grad = cCtx.createConicalGradient
+            ? null
+            : null;
+        cCtx.save();
+        cCtx.translate(cx, cy);
+        cCtx.rotate(sweep);
+        const sweepGrad = cCtx.createLinearGradient(0, 0, maxR, 0);
+        sweepGrad.addColorStop(0, 'rgba(201,168,76,0.1)');
+        sweepGrad.addColorStop(1, 'rgba(201,168,76,0)');
+        cCtx.beginPath();
+        cCtx.moveTo(0, 0);
+        cCtx.arc(0, 0, maxR, -.05, .5);
+        cCtx.fillStyle = sweepGrad;
+        cCtx.fill();
+        cCtx.restore();
+
+        requestAnimationFrame(drawCta);
+    }
+    drawCta();
+
+    /* ══════════════════════════════════════
+       MARQUEE
+    ══════════════════════════════════════ */
+    const MARQUEE_ITEMS = [
+        'Patient Reactivation',
+        'Revenue Recovery',
+        'HIPAA Compliant',
+        'Multi-Channel Outreach',
+        'SMS · Email · Phone',
+        'Practice Growth',
+        '90-Day Guarantee',
+        'Performance-Based',
+        'Dormant to Active',
+        'Discovery Call',
+    ];
+
+    const track = document.getElementById('marquee');
+    const doubled = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+    track.innerHTML = doubled.map(t =>
+        `<div class="marquee-item"><div class="dot"></div>${t}</div>`
+    ).join('');
+
+    /* ══════════════════════════════════════
+       GSAP + ScrollTrigger
+    ══════════════════════════════════════ */
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Nav entrance
+    gsap.to('#nav', {
+        duration: 1.2,
+        delay: 1.6,
+        ease: 'power4.out',
+        onStart() { nav.classList.add('visible'); }
+    });
+    setTimeout(() => nav.classList.add('visible'), 400);
+
+    // Hero animations
+    gsap.to('.badge', { opacity: 1, y: 0, duration: .9, delay: .2, ease: 'power3.out' });
+
+    gsap.to('.hero-h1 .word', {
+        y: 0,
+        opacity: 1,
+        duration: 1.4,
+        stagger: .14,
+        delay: .5,
+        ease: 'power4.out',
+    });
+
+    gsap.to('.hero-sub',     { opacity: 1, duration: .9, delay: 1.1, ease: 'power3.out' });
+    gsap.to('.hero-actions', { opacity: 1, duration: .9, delay: 1.35, ease: 'power3.out' });
+
+    // Counters
+    document.querySelectorAll('.counter').forEach(el => {
+        const target = +el.dataset.target;
+        ScrollTrigger.create({
+            trigger: el,
+            start: 'top 80%',
+            once: true,
+            onEnter() {
+                const obj = { val: 0 };
+                gsap.to(obj, {
+                    val: target,
+                    duration: 2,
+                    ease: 'power2.out',
+                    onUpdate() { el.textContent = Math.round(obj.val); },
+                });
+            }
+        });
+    });
+
+    // Reveal animations
+    document.querySelectorAll('.reveal-up').forEach(el => {
+        gsap.fromTo(el,
+            { opacity: 0, y: 48 },
+            {
+                opacity: 1, y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top 86%', once: true },
+            }
+        );
+    });
+
+    document.querySelectorAll('.reveal-left').forEach(el => {
+        gsap.fromTo(el,
+            { opacity: 0, x: -28 },
+            {
+                opacity: 1, x: 0,
+                duration: .9,
+                ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top 86%', once: true },
+            }
+        );
+    });
+
+    /* ══════════════════════════════════════
+       3D CARD TILT
+    ══════════════════════════════════════ */
+    document.querySelectorAll('.process-step, .testi-card, .why-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const r = card.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            const cx = r.width  / 2;
+            const cy = r.height / 2;
+            const rotX = -(y - cy) / cy * 5;
+            const rotY =  (x - cx) / cx * 5;
+            gsap.to(card, {
+                rotationX: rotX,
+                rotationY: rotY,
+                translateZ: 12,
+                transformPerspective: 900,
+                duration: .25,
+                ease: 'power1.out',
+            });
+        });
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                rotationX: 0,
+                rotationY: 0,
+                translateZ: 0,
+                duration: .7,
+                ease: 'power3.out',
+            });
+        });
+    });
+
+    /* ══════════════════════════════════════
+       STAT BAR HORIZONTAL LINE ANIMATION
+    ══════════════════════════════════════ */
+    gsap.fromTo('.stat',
+        { opacity: 0, y: 30 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: .8,
+            stagger: .12,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.stats-bar', start: 'top 85%', once: true },
+        }
+    );
+
+    /* ══════════════════════════════════════
+       PROBLEM CARDS STAGGER
+    ══════════════════════════════════════ */
+    gsap.fromTo('.problem-card',
+        { opacity: 0, x: 40 },
+        {
+            opacity: 1,
+            x: 0,
+            duration: .9,
+            stagger: .15,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.problem-stack', start: 'top 80%', once: true },
+        }
+    );
+
+    /* ══════════════════════════════════════
+       CASE CARDS STAGGER
+    ══════════════════════════════════════ */
+    gsap.fromTo('.case-card',
+        { opacity: 0, y: 50 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            stagger: .18,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.results-cases', start: 'top 80%', once: true },
+        }
+    );
+
+    /* ══════════════════════════════════════
+       TESTIMONIAL STAGGER
+    ══════════════════════════════════════ */
+    gsap.fromTo('.testi-card',
+        { opacity: 0, y: 40, rotation: 1 },
+        {
+            opacity: 1,
+            y: 0,
+            rotation: 0,
+            duration: 1,
+            stagger: .15,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.testi-grid', start: 'top 80%', once: true },
+        }
+    );
+
+    /* ══════════════════════════════════════
+       PROCESS STEPS STAGGER
+    ══════════════════════════════════════ */
+    gsap.fromTo('.process-step',
+        { opacity: 0, y: 60 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            stagger: .2,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.process-grid', start: 'top 80%', once: true },
+        }
+    );
+
+    /* ══════════════════════════════════════
+       WHY CARDS STAGGER
+    ══════════════════════════════════════ */
+    gsap.fromTo('.why-card',
+        { opacity: 0, y: 40 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: .9,
+            stagger: .12,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.why-grid', start: 'top 80%', once: true },
+        }
+    );
+    </script>
+</body>
+</html>
