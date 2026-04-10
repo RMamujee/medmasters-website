@@ -911,43 +911,6 @@
             margin-top: 6px;
         }
 
-        /* ══════════════════════════════════════
-           STAT BLANK
-        ══════════════════════════════════════ */
-        .stat-blank {
-            font-size: 3rem;
-            color: var(--cream-30);
-            letter-spacing: .1em;
-        }
-
-        /* ══════════════════════════════════════
-           CASE PLACEHOLDER
-        ══════════════════════════════════════ */
-        .case-placeholder {
-            background: var(--bg);
-            border: 1px dashed var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 260px;
-        }
-
-        .case-placeholder-inner {
-            text-align: center;
-        }
-
-        .case-placeholder-icon {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            opacity: .4;
-        }
-
-        .case-placeholder-inner p {
-            font-size: .78rem;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            color: var(--cream-30);
-        }
 
         /* ══════════════════════════════════════
            TESTIMONIALS — SCROLLING TICKER
@@ -1302,6 +1265,135 @@
         }
 
         /* ══════════════════════════════════════
+           STAT STATIC (non-animated values)
+        ══════════════════════════════════════ */
+        .stat-static {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: inherit;
+            font-weight: 300;
+            color: var(--gold);
+        }
+
+        /* ══════════════════════════════════════
+           FOUNDER SECTION
+        ══════════════════════════════════════ */
+        .founder-bg { background: var(--surface); }
+
+        .founder-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: start;
+            margin-top: 80px;
+        }
+
+        .founder-pullquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--cream);
+            line-height: 1.45;
+            border-left: 3px solid var(--gold);
+            padding-left: 28px;
+            margin-bottom: 36px;
+        }
+
+        .founder-bio p {
+            font-size: .95rem;
+            color: var(--cream-60);
+            line-height: 1.85;
+            margin-bottom: 20px;
+        }
+
+        .founder-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: var(--cream);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .founder-title {
+            font-size: .68rem;
+            letter-spacing: .24em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 40px;
+        }
+
+        .founder-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--cream-60);
+            text-decoration: none;
+            font-size: .85rem;
+            transition: color .3s;
+        }
+
+        .contact-link:hover { color: var(--cream); }
+
+        .contact-link-icon {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .78rem;
+            font-weight: 700;
+            font-style: normal;
+            flex-shrink: 0;
+            color: var(--cream-30);
+            transition: border-color .3s, color .3s, background .3s;
+            letter-spacing: .04em;
+        }
+
+        .contact-link:hover .contact-link-icon {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-dim);
+        }
+
+        .guarantee-banner {
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.25);
+            padding: 28px 32px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .guarantee-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+
+        .guarantee-text h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .guarantee-text p {
+            font-size: .84rem;
+            color: var(--cream-60);
+            line-height: 1.65;
+        }
+
+        @media (max-width: 900px) {
+            .founder-layout { grid-template-columns: 1fr; gap: 60px; }
+        }
+
+        /* ══════════════════════════════════════
            DISCOVERY CTA
         ══════════════════════════════════════ */
         .cta-section {
@@ -1511,7 +1603,7 @@
 
             <div class="badge">
                 <div class="badge-dot"></div>
-                <span class="badge-text">Patient Reactivation Specialists</span>
+                <span class="badge-text">Med Spas · Chiros · Functional MDs · Dental</span>
             </div>
 
             <h1 class="hero-h1">
@@ -1530,7 +1622,7 @@
             </h1>
 
             <p class="hero-sub">
-                MedMasters contacts your existing patient list with targeted offers built around your specific patient segments, turning dormant patients into predictable, recurring revenue.
+                We help cash-pay clinics pull $20K–$60K from their existing patient list in 90 days. No ads. No new hires. Just a done-for-you AI system that turns dormant patients into booked appointments.
             </p>
 
             <div class="hero-actions">
@@ -1560,20 +1652,28 @@
     <!-- ════ STATS ════ -->
     <div class="stats-bar" id="stats">
         <div class="stat">
-            <div class="stat-num stat-blank">—</div>
-            <div class="stat-label">Avg. Monthly Revenue Recovered</div>
+            <div class="stat-num">
+                <span class="counter" data-target="75">0</span><span class="suffix">+</span>
+            </div>
+            <div class="stat-label">Cash-Pay Clinics Served</div>
         </div>
         <div class="stat">
-            <div class="stat-num stat-blank">—</div>
-            <div class="stat-label">Average First-Quarter ROI</div>
+            <div class="stat-num">
+                <span>$</span><span class="stat-static">2.2M</span><span class="suffix">+</span>
+            </div>
+            <div class="stat-label">Revenue Recaptured to Date</div>
         </div>
         <div class="stat">
-            <div class="stat-num stat-blank">—</div>
-            <div class="stat-label">Patient Reactivation Rate</div>
+            <div class="stat-num">
+                <span class="counter" data-target="95">0</span><span class="suffix">%</span>
+            </div>
+            <div class="stat-label">Hit Our 30-Day Guarantee</div>
         </div>
         <div class="stat">
-            <div class="stat-num stat-blank">—</div>
-            <div class="stat-label">Days to Measurable Results</div>
+            <div class="stat-num">
+                <span class="counter" data-target="90">0</span>
+            </div>
+            <div class="stat-label">Days to Guaranteed Results</div>
         </div>
     </div>
 
@@ -1589,26 +1689,26 @@
 
             <div class="problem-grid">
                 <div class="problem-copy">
-                    <p class="reveal-up">The average medical practice has <strong>over 1,200 inactive patients</strong> sitting dormant in their system. People who came in, trusted your team, and simply drifted away without a reason to return.</p>
-                    <p class="reveal-up">These are not cold prospects. They already know your name. They've sat in your chair. They've trusted your care. <strong>They just need to hear from you again.</strong></p>
-                    <p class="reveal-up">Most practices spend thousands chasing expensive new patient acquisition while their highest-value asset, an existing database full of warm relationships, collects digital dust. MedMasters changes that equation entirely.</p>
+                    <p class="reveal-up">If you run a cash-pay clinic, your biggest problem probably is not "more leads." It is that you have <strong>already paid to acquire thousands of patients</strong> — and most of them have not heard from you in months.</p>
+                    <p class="reveal-up">Meanwhile your front desk is buried, your schedule is lumpy, and you are tempted to throw money at ads again. The patients who already said yes once, who already trust you, are sitting completely untouched.</p>
+                    <p class="reveal-up">MedMasters installs a system that finds those patients, reaches them at the right moment, and books them back — <strong>without adding to your team's workload or your ad budget.</strong></p>
                 </div>
 
                 <div class="problem-stack">
                     <div class="problem-card reveal-up">
                         <div class="problem-card-icon">⚡</div>
-                        <h3>Silent Revenue Hemorrhage</h3>
-                        <p>Practices lose an average of $14,000 per month from patients who quietly fell off the recall schedule. It is recoverable money, and it is already within reach.</p>
+                        <h3>You've Already Paid for These Patients</h3>
+                        <p>Every dormant patient in your list represents acquisition cost you already spent. Ignoring them is not neutral — it is leaving paid-for revenue on the table every single month.</p>
                     </div>
                     <div class="problem-card reveal-up">
                         <div class="problem-card-icon">🎯</div>
-                        <h3>New Patient Obsession</h3>
-                        <p>Marketing budgets chase expensive new acquisitions at $180 to $300 per new patient, while existing patients worth 5x more go completely unworked.</p>
+                        <h3>Your Front Desk Can't Do This</h3>
+                        <p>Manual follow-up doesn't scale. Your staff is already stretched. Reactivation requires consistent, personalized, multi-touch outreach — not a task that gets remembered between appointments.</p>
                     </div>
                     <div class="problem-card reveal-up">
                         <div class="problem-card-icon">📊</div>
-                        <h3>System Blindness</h3>
-                        <p>Your practice software flags inactive patients but offers zero reactivation strategy. Data without action is just an expensive list collecting dust.</p>
+                        <h3>Ads Won't Solve a Retention Problem</h3>
+                        <p>Spending $5K/month on ads to fill a leaky schedule is a tax on a problem you do not have to pay. The fix is in your database, not your ad account.</p>
                     </div>
                 </div>
             </div>
@@ -1620,31 +1720,31 @@
         <div class="section-full-inner">
             <div class="tag reveal-left">How It Works</div>
             <h2 class="h2 reveal-up">
-                Three moves. One<br>
-                <em>reactivated</em> revenue stream.
+                A done-for-you system.<br>
+                <em>Zero lift</em> from your team.
             </h2>
 
             <div class="process-grid">
                 <div class="process-step reveal-up">
                     <div class="step-glow"></div>
                     <div class="step-number">01</div>
-                    <div class="step-icon">🔍</div>
-                    <h3>Patient Intelligence Audit</h3>
-                    <p>We dive into your practice management system to identify, segment, and score your entire inactive patient list. Not all dormant patients are equal. We find the highest-value targets first and build a precision reactivation roadmap before a single message is sent.</p>
+                    <div class="step-icon">🔌</div>
+                    <h3>Connect and Segment</h3>
+                    <p>We plug directly into your existing EMR or CRM and patient list. No manual exports, no complicated setup. We segment your dormant, overdue, and high-value patients so every message goes to exactly the right person at the right time.</p>
                 </div>
                 <div class="process-step reveal-up">
                     <div class="step-glow"></div>
                     <div class="step-number">02</div>
-                    <div class="step-icon">✉️</div>
-                    <h3>Precision Multi-Channel Outreach</h3>
-                    <p>Personalized sequences across SMS, email, and phone, crafted to feel genuinely human and not automated. Every message reflects your brand voice, your practice name, and specific patient history. No templates. No blasts. Just relevant, thoughtful communication at scale.</p>
+                    <div class="step-icon">📲</div>
+                    <h3>Compliant AI Outreach</h3>
+                    <p>Our system sends personalized, compliant outreach via SMS, email, and voice — crafted to feel human, not automated. It handles replies in real time and books patients directly into your schedule without your front desk touching a thing.</p>
                 </div>
                 <div class="process-step reveal-up">
                     <div class="step-glow"></div>
                     <div class="step-number">03</div>
-                    <div class="step-icon">📈</div>
-                    <h3>Conversion & Retention Engine</h3>
-                    <p>Getting them back is only step one. We install appointment optimization systems, follow-up cadences, and retention protocols that compound over time, turning a reactivation campaign into permanent, predictable revenue infrastructure your practice runs on.</p>
+                    <div class="step-icon">⚙️</div>
+                    <h3>Runs 24/7 Without You</h3>
+                    <p>Once installed, the system runs around the clock. No one on your team needs to "remember" follow-up. No new hires. No ad spend. Just a consistent engine that fills your schedule from the patient base you already have.</p>
                 </div>
             </div>
         </div>
@@ -1684,8 +1784,62 @@
                 <div class="why-card reveal-up">
                     <div class="why-num">04</div>
                     <div class="why-body">
-                        <h3>90-Day Revenue Guarantee</h3>
-                        <p>If MedMasters doesn't cover our entire fee through reactivated patient revenue within 90 days of launch, you pay nothing. We stand behind every engagement, no exceptions.</p>
+                        <h3>The 30-Day Guarantee</h3>
+                        <p>30 booked and 20 shown patients in your first 30 days — or we work for free. 95% of clinics hit this in month one. We put our work on the line with every single engagement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ FOUNDER ════ -->
+    <div class="founder-bg section-full" id="about">
+        <div class="section-full-inner">
+            <div class="tag reveal-left">The Founder</div>
+            <h2 class="h2 reveal-up">
+                Built by an operator.<br>
+                <em>Not an agency.</em>
+            </h2>
+
+            <div class="founder-layout">
+                <div class="founder-bio reveal-up">
+                    <div class="founder-pullquote">
+                        "I don't think like a marketer. I think like a buyer and an owner — because that's exactly where I come from."
+                    </div>
+                    <p>My background is on the finance and operator side: buying, growing, and helping private clinics exit. I have been inside the P&amp;L, dealt with lumpy schedules, and watched good clinics bleed revenue because nobody had the time or system to follow up with patients who already said yes once.</p>
+                    <p>That is why I built MedMasters. Not to sell clinics another marketing project — but to install a revenue engine that runs without your front desk, without your time, and without a dollar in ad spend.</p>
+                    <p>If you run a cash-pay clinic with 1,000+ patients in your database, there is almost certainly $20K–$60K hiding in it. We find it, and we bring it back.</p>
+                </div>
+
+                <div class="founder-right reveal-up">
+                    <div class="founder-name">Kevin Lee</div>
+                    <div class="founder-title">Founder, MedMasters</div>
+
+                    <div class="founder-contact">
+                        <a href="https://linkedin.com/in/kevinlee1021" target="_blank" rel="noopener noreferrer" class="contact-link">
+                            <div class="contact-link-icon">in</div>
+                            linkedin.com/in/kevinlee1021
+                        </a>
+                        <a href="https://www.instagram.com/kevinlee.official" target="_blank" rel="noopener noreferrer" class="contact-link">
+                            <div class="contact-link-icon">ig</div>
+                            @kevinlee.official
+                        </a>
+                        <a href="mailto:kevin@med-masters.com" class="contact-link">
+                            <div class="contact-link-icon">@</div>
+                            kevin@med-masters.com
+                        </a>
+                        <a href="tel:+16268411724" class="contact-link">
+                            <div class="contact-link-icon">☎</div>
+                            +1 (626) 841-1724
+                        </a>
+                    </div>
+
+                    <div class="guarantee-banner">
+                        <div class="guarantee-icon">🛡</div>
+                        <div class="guarantee-text">
+                            <h4>The 30-Day Guarantee</h4>
+                            <p>30 booked and 20 shown patients in your first 30 days — or we work for free. 95% of clinics hit this in month one.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1700,24 +1854,77 @@
             <div class="results-layout">
                 <div class="results-sidebar">
                     <h2 class="h2 reveal-up">
-                        Numbers that<br>
-                        speak louder<br>
-                        <em>than promises.</em>
+                        $2.2M recaptured.<br>
+                        <em>75+ clinics.</em><br>
+                        Real numbers.
                     </h2>
-                    <p class="reveal-up">Real practices. Real patient lists. Real revenue recovered, not projected. These are actual outcomes from MedMasters campaigns.</p>
-                    <a href="#discovery" class="sidebar-cta reveal-up">
-                        See What's In Your Database
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <p class="reveal-up">These are actual outcomes from MedMasters campaigns — not projections, not averages. Real clinics, real patient lists, real revenue recovered.</p>
+                    <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="sidebar-cta reveal-up">
+                        Start Your Diagnostic Call
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
                     </a>
                 </div>
 
                 <div class="results-cases">
-                    <div class="case-placeholder reveal-up">
-                        <div class="case-placeholder-inner">
-                            <div class="case-placeholder-icon">📊</div>
-                            <p>Case studies coming soon.</p>
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">Med Spa · Nelly Gal</div>
+                        <div class="case-quote">"I have spent hundreds of thousands of dollars trying to pay agencies to deliver not even 10% of the results you achieved for my clinic. Forever grateful."</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">$27K</div>
+                                <div class="case-num-label">Added in 30 Days</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">$144K</div>
+                                <div class="case-num-label">Monthly Revenue (up from $117K)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">Med Spa · Calabloom</div>
+                        <div class="case-quote">$1,000 in the first 60 minutes of launch. $11,000 within the first 7 days — from a patient list that had been sitting untouched.</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">$1K</div>
+                                <div class="case-num-label">First 60 Minutes</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">$11K</div>
+                                <div class="case-num-label">First 7 Days</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">Chiropractic / Wellness · Dr. Aaries Oda, DC</div>
+                        <div class="case-quote">"61 bookings in 72 hours. I have 4 staff on the phones for about an hour when it hits. I LOVE IT."</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">61</div>
+                                <div class="case-num-label">Bookings in 72 Hours</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">$0</div>
+                                <div class="case-num-label">Ad Spend</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="case-card reveal-up">
+                        <div class="case-spec">Chiropractic · Adonis Alejandro</div>
+                        <div class="case-quote">"In two and a half, three weeks you helped us raise our production by 35–40%. Visits went from 65–70 to 94–105 per week. We have a real shot at doubling the business this month."</div>
+                        <div class="case-numbers">
+                            <div>
+                                <div class="case-num-val">42%</div>
+                                <div class="case-num-label">Jump in Monthly Cash</div>
+                            </div>
+                            <div>
+                                <div class="case-num-val">105</div>
+                                <div class="case-num-label">Weekly Visits (up from 65)</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2006,8 +2213,8 @@
             <p class="cta-sub reveal-up">
                 In 30 minutes, we have an honest conversation to find out if we are the right fit for your practice. No pitch. No pressure. Just a straightforward look at whether we can help you grow.
             </p>
-            <a href="#discovery" class="btn-xl reveal-up" aria-label="Book your free discovery call">
-                <span>Book Your Free Discovery Call</span>
+            <a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer" class="btn-xl reveal-up" aria-label="Book your free diagnostic call">
+                <span>Book Your Free Diagnostic Call</span>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -2022,11 +2229,14 @@
     <footer>
         <div class="footer-logo">Med<em>Masters</em></div>
         <ul class="footer-links">
-            <li><a href="#process">Process</a></li>
+            <li><a href="#process">How It Works</a></li>
             <li><a href="#results">Results</a></li>
-            <li><a href="#discovery">Book a Call</a></li>
+            <li><a href="#about">Kevin Lee</a></li>
+            <li><a href="https://linkedin.com/in/kevinlee1021" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="https://www.instagram.com/kevinlee.official" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><a href="https://survey.med-masters.com" target="_blank" rel="noopener noreferrer">Book a Call</a></li>
         </ul>
-        <div class="footer-copy">© 2024 MedMasters. Patient Reactivation Specialists.</div>
+        <div class="footer-copy">© 2025 MedMasters · kevin@med-masters.com · +1 (626) 841-1724</div>
     </footer>
 
 
@@ -2246,16 +2456,19 @@
        MARQUEE
     ══════════════════════════════════════ */
     const MARQUEE_ITEMS = [
-        'Patient Reactivation',
-        'Revenue Recovery',
+        'Med Spas',
+        'Chiropractors',
+        'Functional MDs',
+        'Integrative Clinics',
+        'AI Patient Reactivation',
+        '$20K–$60K in 90 Days',
+        'No Ads. No New Hires.',
+        'SMS · Email · Voice',
+        '75+ Clinics Served',
+        '$2.2M+ Recaptured',
+        '30-Day Guarantee',
         'HIPAA Compliant',
-        'Multi-Channel Outreach',
-        'SMS · Email · Phone',
-        'Practice Growth',
-        '90-Day Guarantee',
-        'Performance-Based',
-        'Dormant to Active',
-        'Discovery Call',
+        'Done For You',
     ];
 
     const track = document.getElementById('marquee');
@@ -2287,7 +2500,24 @@
     gsap.to('.hero-sub',     { opacity: 1, duration: .9, delay: 1.1, ease: 'power3.out' });
     gsap.to('.hero-actions', { opacity: 1, duration: .9, delay: 1.35, ease: 'power3.out' });
 
-    // Counters disabled — stats are blank for now
+    // Counters
+    document.querySelectorAll('.counter').forEach(el => {
+        const target = +el.dataset.target;
+        ScrollTrigger.create({
+            trigger: el,
+            start: 'top 80%',
+            once: true,
+            onEnter() {
+                const obj = { val: 0 };
+                gsap.to(obj, {
+                    val: target,
+                    duration: 2,
+                    ease: 'power2.out',
+                    onUpdate() { el.textContent = Math.round(obj.val); },
+                });
+            }
+        });
+    });
 
     // Reveal animations
     document.querySelectorAll('.reveal-up').forEach(el => {
@@ -2373,6 +2603,21 @@
             stagger: .15,
             ease: 'power3.out',
             scrollTrigger: { trigger: '.problem-stack', start: 'top 80%', once: true },
+        }
+    );
+
+    /* ══════════════════════════════════════
+       CASE CARDS STAGGER
+    ══════════════════════════════════════ */
+    gsap.fromTo('.case-card',
+        { opacity: 0, y: 50 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            stagger: .16,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '.results-cases', start: 'top 80%', once: true },
         }
     );
 
