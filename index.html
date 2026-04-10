@@ -334,7 +334,7 @@
         /* headline */
         .hero-h1 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(4.5rem, 10vw, 10.5rem);
+            font-size: clamp(2.8rem, 10vw, 10.5rem);
             font-weight: 300;
             line-height: .93;
             letter-spacing: -.02em;
@@ -954,6 +954,11 @@
         ══════════════════════════════════════ */
         .testi-bg { background: var(--bg); padding-bottom: 0; }
 
+        .testi-header { padding: 140px 64px 0; max-width: 1400px; margin: 0 auto; }
+        .testi-header-inner { padding: 0; }
+        .tscroll-gap { margin-top: 64px; }
+        .tscroll-row2 { margin-top: 3px; margin-bottom: 0; }
+
         .tscroll-wrap {
             overflow: hidden;
             position: relative;
@@ -1465,7 +1470,7 @@
             .why-grid { grid-template-columns: 1fr; }
             .results-layout { grid-template-columns: 1fr; }
             .results-sidebar { position: static; }
-            .testi-grid { grid-template-columns: 1fr; }
+            .tscroll-wrap::before, .tscroll-wrap::after { width: 60px; }
             .nav-links { display: none; }
             footer { flex-direction: column; gap: 20px; }
         }
@@ -1490,7 +1495,7 @@
 
     <!-- Navigation -->
     <nav id="nav">
-        <a href="#" class="logo">Med<em>Masters</em></a>
+        <a href="/" class="logo" aria-label="MedMasters home">Med<em>Masters</em></a>
         <ul class="nav-links">
             <li><a href="#process">Process</a></li>
             <li><a href="#results">Results</a></li>
@@ -1501,7 +1506,7 @@
 
     <!-- ════ HERO ════ -->
     <section class="hero" id="hero">
-        <canvas id="hero-canvas"></canvas>
+        <canvas id="hero-canvas" aria-hidden="true"></canvas>
         <div class="hero-content">
 
             <div class="badge">
@@ -1529,10 +1534,10 @@
             </p>
 
             <div class="hero-actions">
-                <a href="#discovery" class="btn btn-gold">
+                <a href="#discovery" class="btn btn-gold" aria-label="Book your discovery call">
                     <span>Book Discovery Call</span>
-                    <span class="btn-arrow">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <span class="btn-arrow" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
                     </span>
@@ -1722,8 +1727,8 @@
 
     <!-- ════ TESTIMONIALS ════ -->
     <div class="testi-bg" id="testimonials">
-        <div class="section-full-inner" style="padding: 140px 0 0;">
-            <div style="padding: 0 64px;">
+        <div class="testi-header">
+            <div class="testi-header-inner">
                 <div class="tag reveal-left">What Partners Say</div>
                 <h2 class="h2 reveal-up">
                     Real doctors.<br>
@@ -1732,8 +1737,8 @@
             </div>
         </div>
 
-        <!-- Row 1 — scrolls left -->
-        <div class="tscroll-wrap" style="margin-top: 64px;">
+        <!-- Row 1 scrolls left -->
+        <div class="tscroll-wrap tscroll-gap">
             <div class="tscroll-track tscroll-left" id="trow1">
                 <!-- Row 1 cards: Julie Ling, Adonis Alejandro, Nelly Gal, Robert Tseng — doubled for seamless loop -->
                 <div class="tscard">
@@ -1829,7 +1834,7 @@
         </div>
 
         <!-- Row 2 — scrolls right -->
-        <div class="tscroll-wrap" style="margin-top: 3px; margin-bottom: 0;">
+        <div class="tscroll-wrap tscroll-row2">
             <div class="tscroll-track tscroll-right" id="trow2">
                 <!-- Row 2 cards: Jennifer Tsai, Metropolitan Optometry, Mario Gonzalez — doubled -->
                 <div class="tscard">
@@ -1990,7 +1995,7 @@
 
     <!-- ════ DISCOVERY CALL CTA ════ -->
     <section class="cta-section" id="discovery">
-        <canvas id="cta-canvas"></canvas>
+        <canvas id="cta-canvas" aria-hidden="true"></canvas>
         <div class="cta-inner">
             <div class="tag">Discovery Call</div>
             <h2 class="cta-h2 reveal-up">
@@ -2001,9 +2006,9 @@
             <p class="cta-sub reveal-up">
                 In 30 minutes, we have an honest conversation to find out if we are the right fit for your practice. No pitch. No pressure. Just a straightforward look at whether we can help you grow.
             </p>
-            <a href="#" class="btn-xl reveal-up">
+            <a href="#discovery" class="btn-xl reveal-up" aria-label="Book your free discovery call">
                 <span>Book Your Free Discovery Call</span>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
             </a>
@@ -2057,6 +2062,7 @@
     const nav       = document.getElementById('nav');
     const floatCta  = document.getElementById('floatCta');
     const heroEl    = document.getElementById('hero');
+    let canvasPaused = false;
 
     window.addEventListener('scroll', () => {
         const st = window.scrollY;
@@ -2103,6 +2109,7 @@
     let tick = 0;
 
     function drawHero() {
+        if (canvasPaused) return;
         hCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
         tick++;
 
@@ -2190,6 +2197,7 @@
     window.addEventListener('resize', resizeCta);
 
     function drawCta() {
+        if (canvasPaused) return;
         cCtx.clearRect(0, 0, ctaCanvas.width, ctaCanvas.height);
         const t  = Date.now() * .001;
         const cx = ctaCanvas.width  / 2;
@@ -2209,9 +2217,6 @@
 
         // Radar sweep
         const sweep = t * .6;
-        const grad = cCtx.createConicalGradient
-            ? null
-            : null;
         cCtx.save();
         cCtx.translate(cx, cy);
         cCtx.rotate(sweep);
@@ -2228,6 +2233,14 @@
         requestAnimationFrame(drawCta);
     }
     drawCta();
+
+    /* ══════════════════════════════════════
+       TAB VISIBILITY — pause canvas on hidden
+    ══════════════════════════════════════ */
+    document.addEventListener('visibilitychange', () => {
+        canvasPaused = document.hidden;
+        if (!canvasPaused) { drawHero(); drawCta(); }
+    });
 
     /* ══════════════════════════════════════
        MARQUEE
@@ -2257,12 +2270,6 @@
     gsap.registerPlugin(ScrollTrigger);
 
     // Nav entrance
-    gsap.to('#nav', {
-        duration: 1.2,
-        delay: 1.6,
-        ease: 'power4.out',
-        onStart() { nav.classList.add('visible'); }
-    });
     setTimeout(() => nav.classList.add('visible'), 400);
 
     // Hero animations
